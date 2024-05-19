@@ -1,16 +1,15 @@
-//Font Drawing Routines .
+// Font Drawing Routines .
 #include "24pix.h"
 
-//8x8 Mini Bitmap ,Corrected .
+// 8x8 Mini Bitmap ,Corrected .
 
-#define WIDTH       8
-#define MAXCHARS  256
+#define WIDTH    8
+#define MAXCHARS 256
 
-struct 
-{char chars[MAXCHARS][WIDTH];}
-font=
+struct
 {
-{
+    char chars[MAXCHARS][WIDTH];
+} font = {{
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
@@ -267,31 +266,50 @@ font=
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      }
-}
-};
+}};
 
-void dispchar(char arr[WIDTH],int x=0,int y=0,int col=WHITE,int bol=BLACK,
-int size=1)
-{int i,j,k,p,q,cc;
-for(i=0;i<WIDTH;i++){for(j=128,k=0;k<WIDTH;k++,j/=2){
-if(arr[i]&j)cc=col;else cc=bol;for(p=0;p<size;p++){for(q=0;q<size;q++)
+void dispchar(char arr[WIDTH], int x = 0, int y = 0, int col = WHITE,
+              int bol = BLACK, int size = 1)
 {
- #ifdef IBGI
- putpixel(x+(k*size)+q,y+(i*size)+p,cc);
- #endif
- #ifndef IBGI
- #ifdef I24BIT
- put24pixel
- (x+(k*size)+q,y+(i*size)+p,
- dpalette[(cc*3)  ],dpalette[(cc*3)+1],dpalette[(cc*3)+2]);
- #endif
- #ifndef I24BIT
- putpixel(x+(k*size)+q,y+(i*size)+p,cc);
- #endif
- #endif
-}}}}}
+    int i, j, k, p, q, cc;
+    for (i = 0; i < WIDTH; i++)
+    {
+        for (j = 128, k = 0; k < WIDTH; k++, j /= 2)
+        {
+            if (arr[i] & j)
+                cc = col;
+            else
+                cc = bol;
+            for (p = 0; p < size; p++)
+            {
+                for (q = 0; q < size; q++)
+                {
+#ifdef IBGI
+                    putpixel(x + (k * size) + q, y + (i * size) + p, cc);
+#endif
+#ifndef IBGI
+#ifdef I24BIT
+                    put24pixel(x + (k * size) + q, y + (i * size) + p,
+                               dpalette[(cc * 3)], dpalette[(cc * 3) + 1],
+                               dpalette[(cc * 3) + 2]);
+#endif
+#ifndef I24BIT
+                    putpixel(x + (k * size) + q, y + (i * size) + p, cc);
+#endif
+#endif
+                }
+            }
+        }
+    }
+}
 
-void drawstring(char str[],int x=0,int y=0,int col=WHITE,int bol=BLACK,
-int size=1)
-{int i=0;for(;str[i]!=0;i++)
-{dispchar(font.chars[str[i]],x+(i*size*WIDTH),y,col,bol,size);}}
+void drawstring(char str[], int x = 0, int y = 0, int col = WHITE,
+                int bol = BLACK, int size = 1)
+{
+    int i = 0;
+    for (; str[i] != 0; i++)
+    {
+        dispchar(font.chars[str[i]], x + (i * size * WIDTH), y, col, bol,
+                 size);
+    }
+}
