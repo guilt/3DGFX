@@ -4,12 +4,29 @@
 #define IDEF
 #include "mathd.h"
 
+#ifdef _MSC_VER
+
+#include <stdlib.h>
+
+void clrscr()
+{
+    printf("\f");
+}
+
+void delay(int delaytime)
+{
+   //TODO: Implement for Microsoft C/C++.
+}
+
+#endif
+
 #ifdef IBGI
 
 int bgm, bgd;
 char bgpath[] = {"..\\BGI"}; // Fix Your Own BGI Path !
 
 #ifndef ISVGA
+
 void graini()
 {
     clrscr();

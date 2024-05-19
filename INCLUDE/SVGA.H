@@ -3,6 +3,9 @@
 #include "dos.h"
 
 #define sgn(x) ((x < 0) ? -1 : ((x > 0) ? 1 : 0))
+#ifndef M_PI
+#define M_PI 3.1415f
+#endif
 #define rad(o) (o * M_PI) / 180
 #define word_out(port, register, value) \
     outp(port, (((word)value << 8) + register))

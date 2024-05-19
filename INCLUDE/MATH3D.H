@@ -1,6 +1,9 @@
 // File That Does 3D Point Manipulation .
 
 #ifdef IBGI
+#ifndef M_PI
+#define M_PI 3.1415f
+#endif             
 #define rad(o)     (o * M_PI) / 180
 #define NUM_COLORS getmaxcolor() + 1
 #include "bios.h"

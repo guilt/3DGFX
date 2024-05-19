@@ -6,6 +6,14 @@
 #define WIDTH    8
 #define MAXCHARS 256
 
+#ifndef BLACK
+#define BLACK 0
+#endif
+
+#ifndef WHITE
+#define WHITE 255
+#endif
+
 struct
 {
     char chars[MAXCHARS][WIDTH];
