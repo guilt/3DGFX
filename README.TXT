@@ -1,17 +1,3 @@
-LICENSE
--------
-
-The Library is Free : 
-
-Yet, You are Authorized to use it as long as you use it
-for Non-Defense Purposes (which is Pretty Unlikely!)  
-
-DISCLAIMER
-----------
-
-This Version may have Some Defects, and it is intended 
-to correct them in the Future Builds; It is suggested that this
-Library be used Carefully.  
 
 README
 ------
