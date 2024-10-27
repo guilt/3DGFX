@@ -1,7 +1,10 @@
-// Planes and Bitmapsizing Demo .
-#include "bmp.h"
+// Planes and Bitmap Sizing Demo.
 
-void main()
+#include <conio.h>
+#include <bmp.h>
+#include <mathren.h>
+
+int main()
 {
     int x, y;
     point3d p;
@@ -55,4 +58,5 @@ void main()
     }
     getch();
     graclo();
+    return 0;
 }

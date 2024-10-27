@@ -1,27 +1,33 @@
 // Textured Z-Buffered Object Demo .
-// Press x/y/z to choose the axis (default z) .Press Left/Right to move
-// in Counterclockwise ,along that axis .Press Escape to Quit .
+
+// Keys to Press:
+// x / y / z  : Axis (Default is z)
+// Left/Right : to Move Counterclockwise on Axis
+//        Esc :  to Quit
 
 #define IHSR
 #define IZBUF
 #define IZCLIP
-#include "mathtd.h"
 
-void main()
+#include <conio.h>
+#include <tmathren.h>
+
+int main()
 {
     char c, d;
     int flag = 2; // Default Z
     int v = 1, rot = 10;
     tobject o, o1;
     mkzbuf();
-    readtobj("texo.txt", o); // Load The Objects .... !
-    readtobj("texo2.txt", o1);
+    readtobj("texo1.msh", o); // Load The Objects .... !
+    readtobj("texo2.msh", o1);
     graini();
-    loadtex("new.tex"); // Load Common Textures .... !
+    loadtex("tex.tex"); // Load Common Textures .... !
     rinittex();
     atotrans(o1, 14, 14, 14);
     do
     {
+        clearviewport();
         clrzbuf();
         drawtobj(o);
         drawtobj(o1);
@@ -84,4 +90,5 @@ void main()
     } while (c != 27);
     rmzbuf();
     graclo();
+    return 0;
 }

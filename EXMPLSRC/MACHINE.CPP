@@ -1,36 +1,38 @@
-// Simulation .
-// Keys to Press :
-// Base 4
-// Primary Arm 2
-// Auxillary Arm 1
-// Moving Rod (By Default) 3
-// Up/Down to Move
-#include "defs.h"
+// Machine Simulation.
 
-object* o = NULL;
+// Keys to Press:
+//        1 Auxiliary Arm
+//        2 Primary Arm
+//        3 Moving Rod (By Default)
+//        4 Base
+//  Up/Down to Move
+//      Esc to Quit
 
-void main()
+#include <conio.h>
+#include <mathren.h>
+
+int main()
 {
     /*
     Array Index :
     Base 0
     Primary Arm 1
-    Auxillary Arm 2
+    Auxilliary Arm 2
     Moving Rod 3
     */
     char c, d;
     int flag = 2, armauxdeg = 0, bdeg = 0;
     double levermovt = 0, basemovt = 0;
-    o = new object[4];
-    if (o == NULL)
+    object* o = new object[4];
+    if (!o)
     {
-        return;
+        return 1;
     }
     graini();
-    readobj("base.txt", o[0]);
-    readobj("armb.txt", o[1]);
-    readobj("lever.txt", o[2]);
-    readobj("armaux.txt", o[3]);
+    readobj("base.msh", o[0]);
+    readobj("armb.msh", o[1]);
+    readobj("lever.msh", o[2]);
+    readobj("armaux.msh", o[3]);
     do
     {
         drawobj(o[0], 1);
@@ -141,4 +143,5 @@ void main()
         d = -1;
     } while (c != 27);
     graclo();
+    return 0;
 }

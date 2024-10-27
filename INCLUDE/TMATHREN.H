@@ -1,5 +1,7 @@
 // File That Can Draw Textured Objects .
-#include "tril.h"
+#include <fstream.h>
+
+#include <triren.h>
 
 int i;
 textriangle3d t, clt;
@@ -45,6 +47,7 @@ int readtobj(char* fn, tobject& o)
 {
     char c;
     int i;
+    fstream file;
     o.no = 0;
     file.open(fn, ios::in);
     if (!file)
@@ -87,6 +90,7 @@ char texname[MAXTEXTURES][60];
 void loadtex(char* fn)
 {
     int i;
+    fstream file;
     file.open(fn, ios::in);
     if (!file)
     {

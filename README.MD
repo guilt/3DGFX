@@ -28,12 +28,12 @@ I thank you for getting this Code.
 ## FEEDBACK
 
 If you happen to have any suggestions/improvements on this Code,
-**E-Mail me** or raise a **Pull Request**.
+**E-Mail me** or raise a **Pull Request**. Visit the GitHub Repository
+for more Updates.
 
-You can always visit my GitHub Repository for more Updates.
-
-Do let me know about what you feel about this release of the
-Free Code.
+Do let me know about what you feel about this release of this
+code. This was released in **2001** and computer graphics
+has come along very far.
 
 All feedback welcome!
 

@@ -1,12 +1,11 @@
-// Definitions File .
+// Definitions File.
 
 #ifndef IDEF
 #define IDEF
-#include "mathd.h"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__GNUC__) || defined(__WATCOMC__)
 
-#include <stdlib.h>
+#include <stdio.h>
 
 void clrscr()
 {
@@ -21,12 +20,12 @@ void delay(int delaytime)
 #endif
 
 #ifdef IBGI
+#include <graphics.h>
 
 int bgm, bgd;
 char bgpath[] = {"..\\BGI"}; // Fix Your Own BGI Path !
 
 #ifndef ISVGA
-
 void graini()
 {
     clrscr();
@@ -36,9 +35,9 @@ void graini()
 #endif
 
 #ifdef ISVGA
+#include <svga256.h>
 #define SVGAPATH "SVGA256"
-#include "svga256.h"
-char svgapath[] = {"SVGA256"};
+
 void setsvgapal()
 {
     int i;
@@ -61,7 +60,7 @@ void setsvgapal()
 
 void graini(int tm = SVGA640x480x256)
 {
-    bgd = installuserdriver(svgapath, NULL), bgm = tm;
+    bgd = installuserdriver(SVGAPATH, NULL), bgm = tm;
     initgraph(&bgd, &bgm, bgpath);
     if (graphresult() != grOk)
     {
@@ -78,10 +77,26 @@ void graclo()
     restorecrtmode();
     clrscr();
 }
+
 #define svgraini() graini()
+
+#define maxx          getmaxx()
+#define maxy          getmaxy()
+#define midx          (maxx + 1) / 2
+#define midy          (maxy + 1) / 2
+#define screen_width  maxx + 1
+#define screen_height maxy + 1
+
 #endif
 
 #ifndef IBGI
+#include <vga.h>
+
+#define maxx screen_width - 1
+#define maxy screen_height - 1
+#define midx (screen_width / 2)
+#define midy (screen_height / 2)
+
 void graini()
 {
     clrscr();

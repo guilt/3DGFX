@@ -1,8 +1,10 @@
 // Surfaces with Textures on them ....
 
-#include "bmp.h"
+#include <conio.h>
+#include <bmp.h>
+#include <mathren.h>
 
-void main()
+int main()
 {
     int x, y;
     point3d p;
@@ -12,7 +14,7 @@ void main()
     int h;
     int bzcf = 4; // Plane Compression Factors .
     int bxcf = 1;
-    loadbmp("ietex.bmp", b);
+    loadbmp("intex.bmp", b);
     w = b.h.width / 2;
     h = b.h.height / 2;
     graini();
@@ -31,4 +33,5 @@ void main()
     }
     getch();
     graclo();
+    return 0;
 }

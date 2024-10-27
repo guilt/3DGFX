@@ -5,7 +5,10 @@
 
 #ifndef TEX
 #define TEX
-#include "defs.h"
+
+#include <fstream.h>
+
+#include <defs.h>
 
 #define wfa 40 // 40x40 Textures Only
 
@@ -51,6 +54,7 @@ void loadbmp(char* fn, texture& b)
 {
     long i, j;
     int wflag = 0;
+    fstream file;
     char ct;
     file.open(fn, ios::in | ios::binary);
     if (!file)
@@ -115,6 +119,7 @@ void loadbmp(char* fn, texture& b)
     }
     file.close();
 }
+
 void init_tex()
 {
     int i;
@@ -128,17 +133,12 @@ void init_tex()
     }
 }
 
-#ifndef IBGI
-#define inittex() init_tex()
-#endif
-
-#ifdef IBGI
-#ifdef ISVGA
-#define inittex() init_tex()
-#endif
-#ifndef ISVGA
+#if defined(IBGI) && !defined(ISVGA)
 #define inittex()
 #endif
+
+#ifndef inittex
+#define inittex() init_tex()
 #endif
 
 #endif

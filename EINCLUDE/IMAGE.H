@@ -1,5 +1,10 @@
 // Easy Image Routines .
-#include "fonts.h"
+#include <fstream.h>
+
+#include <defs.h>
+#ifdef I24BIT
+#include <24pix.h>
+#endif
 
 #define I_ORD_DRAW 0
 #define I_OR_DRAW  1
@@ -9,13 +14,13 @@
 #define unchar unsigned char
 #define unint  unsigned int
 
-fstream ifile;
-
 void setfilepalette(char palfilename[] = "default.pal")
 {
     int i, r, g, b, tflag = 0;
     unsigned int tmp;
+    fstream ifile;
     char a;
+
     ifile.open(palfilename, ios::in | ios::binary);
     if (!ifile)
     {
@@ -60,7 +65,9 @@ void loadfilepalette(char palfilename[] = "default.pal",
 {
     int i, r, g, b, tflag = 0;
     unsigned int tmp;
+    fstream ifile;
     char a;
+
     ifile.open(palfilename, ios::in | ios::binary);
     if (!ifile)
     {
@@ -346,7 +353,9 @@ void image ::stdraw(unint x1, unint y1, unint x2, unint y2)
 void image ::load(char imafilename[], unchar enkey = 0)
 {
     unint tmp, tflag = 0;
+    fstream ifile;
     unchar c;
+
     if (bmpbuf != NULL)
     {
         delete[] bmpbuf;

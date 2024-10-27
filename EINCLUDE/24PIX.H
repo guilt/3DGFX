@@ -1,14 +1,10 @@
-// My Own Funky 24-BPP Palette .
-#include "defs.h"
-
+// 24-bit to 8-bit Dithering .
 #ifdef IBGI
-#define byte  unsigned char
-#define word  unsigned int
-#define dword unsigned long
+#error BGI Must Not be Used with 24-Bit reduction!
 #endif
 
-#ifndef IBGI
 #ifdef I24BIT
+#include <defs.h>
 
 byte b24palette[768];
 
@@ -61,11 +57,4 @@ void put24pixel(int x, int y, unsigned int r, unsigned int g, unsigned int b)
     // Render Directly with the Calculated Indexes .
     putpixel(x, y, ((r * 36) + (g * 6) + b) % 256);
 }
-#endif
-#endif
-
-#ifdef IBGI
-#ifdef I24BIT
-#error BGI Must Not be Used with 24-Bit reduction !
-#endif
 #endif

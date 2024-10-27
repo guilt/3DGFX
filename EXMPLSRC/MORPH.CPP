@@ -1,7 +1,8 @@
-// Morphology .
-// Can Use for Generic Pictures .
+// Morphing between two Pictures.
+
 #define I24BIT
-#include "image.h"
+#include <conio.h>
+#include <image.h>
 
 #define MT 80
 
@@ -36,7 +37,7 @@ void morph(int x, int y, image& i1, byte pal1[768], image& i2,
     }
 }
 
-void main()
+int main()
 {
     image i1, i2;
     byte pal1[768], pal2[768];
@@ -53,4 +54,5 @@ void main()
         morph(110, 30, i2, pal2, i1, pal1);
     }
     graclo();
+    return 0;
 }

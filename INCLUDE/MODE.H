@@ -1,14 +1,7 @@
 // Set The Ball Rolling ....
 // The Entry point of this Library Starts Here .
-#include "dos.h"
+#include <dos.h>
 
-#define sgn(x) ((x < 0) ? -1 : ((x > 0) ? 1 : 0))
-#ifndef M_PI
-#define M_PI 3.1415f
-#endif
-#define rad(o) (o * M_PI) / 180
-#define word_out(port, register, value) \
-    outp(port, (((word)value << 8) + register))
 #define VIDEO_INT          0x10
 #define SET_MODE           0x00
 #define TEXT_MODE          0x03

@@ -1,8 +1,9 @@
-// 3D Graphs with Normal Contours .
+// 3D Graphs with Normal Contours.
 
-#include "defs.h"
+#include <conio.h>
+#include <mathren.h>
 
-void main()
+int main()
 {
     double r, s;
     point3d p1;
@@ -15,7 +16,7 @@ void main()
         {
             p1.z = s;
 
-            // Deselect the Required Sections .
+            // Choose from among any equation Below.
 
             // p1.y=((p1.z*p1.x)*((p1.x*p1.x)-(p1.z*p1.z))/((p1.x*p1.x)+(p1.z*p1.z)));
 
@@ -33,4 +34,5 @@ void main()
     drawaxis(1);
     getch();
     graclo();
+    return 0;
 }

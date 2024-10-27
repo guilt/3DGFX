@@ -1,23 +1,22 @@
 // Font Drawing Routines .
-#include "24pix.h"
+#ifdef I24BIT
+#include <24pix.h>
+#else
+#include <defs.h>
+#endif
+#include <colors.h>
 
 // 8x8 Mini Bitmap ,Corrected .
 
 #define WIDTH    8
 #define MAXCHARS 256
 
-#ifndef BLACK
-#define BLACK 0
-#endif
-
-#ifndef WHITE
-#define WHITE 255
-#endif
-
-struct
+typedef struct
 {
-    char chars[MAXCHARS][WIDTH];
-} font = {{
+    byte chars[MAXCHARS][WIDTH];
+} font;
+
+font DEFAULT_FONT = {{
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
@@ -276,8 +275,8 @@ struct
 {   0,  0,  0,  0,  0,  0,  0,  0      }
 }};
 
-void dispchar(char arr[WIDTH], int x = 0, int y = 0, int col = WHITE,
-              int bol = BLACK, int size = 1)
+void _dispchar(byte arr[WIDTH], int x = 0, int y = 0, int col = COLOR_WHITE,
+              int bol = COLOR_BLACK, int size = 1)
 {
     int i, j, k, p, q, cc;
     for (i = 0; i < WIDTH; i++)
@@ -292,18 +291,12 @@ void dispchar(char arr[WIDTH], int x = 0, int y = 0, int col = WHITE,
             {
                 for (q = 0; q < size; q++)
                 {
-#ifdef IBGI
-                    putpixel(x + (k * size) + q, y + (i * size) + p, cc);
-#endif
-#ifndef IBGI
 #ifdef I24BIT
                     put24pixel(x + (k * size) + q, y + (i * size) + p,
                                dpalette[(cc * 3)], dpalette[(cc * 3) + 1],
                                dpalette[(cc * 3) + 2]);
-#endif
-#ifndef I24BIT
+#else
                     putpixel(x + (k * size) + q, y + (i * size) + p, cc);
-#endif
 #endif
                 }
             }
@@ -311,13 +304,13 @@ void dispchar(char arr[WIDTH], int x = 0, int y = 0, int col = WHITE,
     }
 }
 
-void drawstring(char str[], int x = 0, int y = 0, int col = WHITE,
-                int bol = BLACK, int size = 1)
+void drawstring(char str[], int x = 0, int y = 0, int col = COLOR_WHITE,
+                int bol = COLOR_BLACK, int size = 1, font font_user = DEFAULT_FONT)
 {
     int i = 0;
     for (; str[i] != 0; i++)
     {
-        dispchar(font.chars[str[i]], x + (i * size * WIDTH), y, col, bol,
+        _dispchar(font_user.chars[str[i]], x + (i * size * WIDTH), y, col, bol,
                  size);
     }
 }

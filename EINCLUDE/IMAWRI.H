@@ -1,7 +1,6 @@
 // Easy to Use Image Converter .
 // With : Mini BMP File Loader .
-#include "fstream.h"
-#include "malloc.h"
+#include <fstream.h>
 
 struct bitmapheader
 {
@@ -30,30 +29,26 @@ struct rgb
     char b, g, r, a;
 } pal[256];
 
-char* bmpbuf = NULL;
-
 void bmp2ima(char* bmpfilename, char* imfilename, int tflag = 0,
              unsigned char enkey = 0, char* palfilename = "default.pal")
 {
     long i, j;
+    char* bmpbuf = NULL;
     fstream bmpfile, file;
     bmpfile.open(bmpfilename, ios::in | ios::binary);
     if (!bmpfile)
     {
-        cout << "\nInp\n";
         return;
     }
     bmpfile.read((char*)&h, sizeof(bitmapheader));
     if (h.header[0] != 'B' || h.header[1] != 'M')
     {
-        cout << "\nSig\n";
         bmpfile.close();
         return;
     }
     // Check for Compression and Bits Per Pixel :
     if (h.sizeofimage != (h.height * h.width))
     {
-        cout << "\nCmp\n";
         return;
     }
     if (h.colorsused == 0)
@@ -63,7 +58,6 @@ void bmp2ima(char* bmpfilename, char* imfilename, int tflag = 0,
     bmpbuf = new char[h.height * h.width];
     if (bmpbuf == NULL)
     {
-        cout << "\nMAL\n";
         bmpfile.close();
         return;
     }
@@ -83,7 +77,6 @@ void bmp2ima(char* bmpfilename, char* imfilename, int tflag = 0,
     file.open(imfilename, ios::out | ios::binary);
     if (!file)
     {
-        cout << "\nOut\n";
         return;
     }
     file << "IM";
@@ -158,6 +151,5 @@ void bmp2ima(char* bmpfilename, char* imfilename, int tflag = 0,
                  << ((unsigned int)pal[i].b) % 256 << "\n";
         }
     }
-    cout << "\nOK!\n";
     file.close();
 }

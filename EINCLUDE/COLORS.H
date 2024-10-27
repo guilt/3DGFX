@@ -1,0 +1,6 @@
+#define COLOR_BLACK 0
+#define COLOR_GREEN 3
+#define COLOR_RED 4
+#define COLOR_LIGHTBLUE 9
+#define COLOR_WHITE 255
+

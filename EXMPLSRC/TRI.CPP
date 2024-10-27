@@ -1,16 +1,24 @@
 // User Interactive Triangle Rotation and Revolution .
 
-// Notice that when one of the Vertices is the Origin ,Revolution changes
-// to Rotation .But anyway ,to Rotate a triangle ,none of the vertices
-// being the Origin ,fix a point ,such as the Vertex/Centroid as the Origin
-// and proceed .
+// Notice that when one of the Vertices is the Origin, Revolution changes
+// to Rotation. But anyway, to Rotate a triangle, none of the vertices
+// being the Origin, fix a point, such as the Vertex/Centroid as the Origin
+// and proceed.
 
 // Press x/y/z to choose the axis (default z) .Press Up/Down to move
 // in Counterclockwise ,along that axis .Press Escape to Quit .
 
-#include "defs.h"
+// Keys to Press:
+// x / y / z : Axis (Default is z)
+// Up / Down : to Move Counterclockwise on Axis
+//       Esc :  to Quit
 
-void main()
+
+#include <conio.h>
+#include <colors.h>
+#include <mathren.h>
+
+int main()
 {
     char c, d;
     int flag = 2;
@@ -28,9 +36,9 @@ void main()
     t4 = t3;
     do
     {
-        drawaxis(LIGHTBLUE);
-        drawtriangle(t2, RED);
-        drawtriangle(t4, GREEN);
+        drawaxis(COLOR_LIGHTBLUE);
+        drawtriangle(t2, COLOR_RED);
+        drawtriangle(t4, COLOR_GREEN);
         c = getch();
         if (c == 'x')
         {
@@ -78,9 +86,9 @@ void main()
                 degz -= 10;
             }
         }
-        drawtriangle(t2, BLACK);
-        drawtriangle(t4, BLACK);
-        drawaxis(BLACK);
+        drawtriangle(t2, COLOR_BLACK);
+        drawtriangle(t4, COLOR_BLACK);
+        drawaxis(COLOR_BLACK);
         t2 = t1;
         t4 = t3;
         atrot(t2, degx, degy, degz);
@@ -88,4 +96,5 @@ void main()
         d = -1;
     } while (c != 27);
     graclo();
+    return 0;
 }

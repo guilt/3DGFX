@@ -1,27 +1,12 @@
-// File That Draws Some Objects .
-#include "math3d.h"
+// File That Draws 3D Objects.
+#include <fstream.h>
 
-fstream file;
+#include <math3d.h>
+#include <defs.h>
 
 int minx = 0, miny = 0;
 double xscale = 4.5, yscale = 4.5;
-double ot;
-
-#ifdef IBGI
-#define maxx          getmaxx()
-#define maxy          getmaxy()
-#define midx          (maxx + 1) / 2
-#define midy          (maxy + 1) / 2
-#define screen_width  maxx + 1
-#define screen_height maxy + 1
-#endif
-
-#ifndef IBGI
-#define maxx screen_width - 1
-#define maxy screen_height - 1
-#define midx (screen_width / 2)
-#define midy (screen_height / 2)
-#endif
+double ot = 0.0;
 
 // Isometric Engine .
 #ifdef IISO
@@ -175,6 +160,8 @@ int readobj(char* fn, object& o)
 {
     char c;
     int i;
+    fstream file;
+
     o.no = 0;
     file.open(fn, ios::in);
     if (!file)

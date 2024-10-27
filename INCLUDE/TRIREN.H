@@ -1,5 +1,10 @@
 // The Triangle Renderer .
-#include "zbuf.h"
+#include <tex.h>
+#include <mathren.h>
+
+#ifdef IZBUF
+#include <zbuf.h>
+#endif
 
 #define MIN(a, b) ((a < b) ? (a) : (b))
 #define MAX(a, b) ((a > b) ? (a) : (b))
@@ -13,19 +18,8 @@
     (z <= 0) ? ((z <= Yon) ? z = Yon : z) \
              : ((z >= Hither) ? z = Hither : z)
 
-int xd1, yd1, xd2, yd2;
-int Lx, Rx;
-int x;
-char z; // Important For Z-Buffering .
 tempp tp;
 tempp p1, p2, p3;
-
-#ifdef IHSR
-double x1, y1, z1;
-double x2, y2, z2;
-double x3, y3, z3;
-double D;
-#endif
 
 texture tex[MAXTEXTURES];
 
@@ -47,17 +41,23 @@ void sort(tempp& p1, tempp& p2)
 
 void hline(int x1, int x2, int y, int texno)
 {
+    int x;
+    char z; // Important For Z-Buffering .
+
     for (x = x1; x <= x2; x++)
     {
+#ifdef IZBUF
         zbufr(
             x, y, z,
             tex[texno].bmpbuf[x % tex[texno].h.width]
                              [tex[texno].h.height - (y % tex[texno].h.width)]);
+#endif
     }
 }
 
 void chline(int x1, int x2, int y)
 {
+    int x;
     for (x = x1; x <= x2; x++)
     {
         putpixel(x, y, 0);
@@ -67,6 +67,15 @@ void chline(int x1, int x2, int y)
 void clear(textriangle3d t)
 {
     int i;
+
+#ifdef IHSR
+    double x1, y1, z1;
+    double x2, y2, z2;
+    double x3, y3, z3;
+    double D;
+#endif
+    int xd1, yd1, xd2, yd2;
+    int Lx, Rx;
 #ifdef IZCLIP
     zclip(t.t.p1.z);
     zclip(t.t.p2.z);
@@ -123,6 +132,14 @@ void clear(textriangle3d t)
 void render(textriangle3d t)
 {
     int i;
+    int xd1, yd1, xd2, yd2;
+    int Lx, Rx;
+#ifdef IHSR
+    double x1, y1, z1;
+    double x2, y2, z2;
+    double x3, y3, z3;
+    double D;
+#endif
 #ifdef IZCLIP
     zclip(t.t.p1.z);
     zclip(t.t.p2.z);

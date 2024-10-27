@@ -53,34 +53,38 @@ The default xyz System is drawn as:
 
 ```
     Y
+    ^
     |
-    |_____X
-    /
+    |-----> X
    /
-  Z
+  /
+ v 
+Z
 ```
 
-which is a left-handed system. 
+which is a right-handed system. 
 
 There is yet another Engine, which functions differently. This is the Isometric Engine,
 where the octant is drawn as: 
 
 ```
         Y
+        ^
         |
-	    |
+        |
        / \
       /   \
-     Z     X
+     v     v
+    Z       X
 ```
 
 The Objects are drawn as follows: 
 
 Choose the number of vertices of the Object 'n'. Then Plot them as per
-the shape of the object. Name the vertices as 0, 1, 2. .... n-1. 
-Then write out the 'l' lines that are to be joined in terms of the endpoints
-,such as 1,2 (line joining vertex 1 and vertex 2). Now after all the l
-lines are completed, do the File, whose format is: 
+the shape of the object. Name the vertices as `0, 1, 2. .... n-1`. 
+Then write out the `l` lines that are to be joined in terms of the endpoints
+,such as `1,2` (line joining vertex `1` and vertex `2`). Now after all the `l`
+lines are completed, write out to a text file, whose format is: 
 
 ```
    n
@@ -107,7 +111,7 @@ The Lines are replaced by Textured Triangles, whose elements are written as:
    v(0)1,v(0)2,v(0)3:t(0)
 ```
 
-Where `t(0)` is the **Texture Number** as defined in the `NEW.TEX` File: 
+Where `t(0)` is the **Texture Number** as defined in the `TEX.TEX` File: 
 
 ```
    nt
@@ -119,17 +123,14 @@ Where `t(0)` is the **Texture Number** as defined in the `NEW.TEX` File:
    t(nt-1)
 ```
 
-Of Course, you can use your own textures! 
+Some samples have been provided. Of course, you can use
+your own textures! 
 
-This covers Basic 3D, But more graphics code will have to go into it, to get
+This covers basic 3D, But more graphics code will have to go into it, to get
 a swell 3D Rendering program. You can extend this library to support Lighting, 
-by making use of the 24-Bit Reduction System in the Extended Hierarchy. 
+by making use of the **24-bit to 8-bit** palette reduction system. 
 
-The Graphics Library used was first the **BGI**. Now this is a somewhat
-Independent VGA library. Backward Compatibility with the BGI is Provided. 
-But "Some" Features of the Library may be "Unusable" if the BGI is used. 
-
-Read The `HEADERS.MD` File for Help on the **Library File Organization**, and the
-`DESC.MD` file for a **Description of the Layout**: Where, what files can be found. 
-
-Please Read the `README.MD`, for the usage and other thoughts. 
+The Graphics Library was first written with the **BGI**. Now this is a
+somewhat independent library. Backward Compatibility with the **BGI** is
+Provided. "Some" Features of the Library are not designed to work with **BGI**
+because the **BGI** can work on old untested hardware.

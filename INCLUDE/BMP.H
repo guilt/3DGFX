@@ -1,11 +1,14 @@
-// BMP File Renderer .
+// BMP File Renderer.
+
 #ifdef TEX
-#error Sorry ,Architecture Does Not Support Both Textures and Bitmaps !
+#error Sorry, We Do Not Support Both Textures and Bitmaps!
 #endif
 
 #ifndef BMP
 #define BMP
-#include "defs.h"
+
+#include <fstream.h>
+#include <defs.h>
 
 struct bitmapheader
 {
@@ -44,6 +47,7 @@ struct bitmap
 void loadbmp(char* fn, bitmap& b)
 {
     long i, j;
+    fstream file;
     file.open(fn, ios::in | ios::binary);
     if (!file)
     {

@@ -1,26 +1,13 @@
-// File That Does 3D Point Manipulation .
+// File That Does 3D Point Manipulation.
 
-#ifdef IBGI
+#include <math.h>
+
 #ifndef M_PI
 #define M_PI 3.1415f
 #endif             
-#define rad(o)     (o * M_PI) / 180
-#define NUM_COLORS getmaxcolor() + 1
-#include "bios.h"
-#include "conio.h"
-#include "ctype.h"
-#include "dos.h"
-#include "fstream.h"
-#include "graphics.h"
-#include "iomanip.h"
-#include "math.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#endif
 
-#ifndef IBGI
-#include "vga.h"
+#ifndef rad
+#define rad(o)     (o * M_PI) / 180
 #endif
 
 double mod(double a)

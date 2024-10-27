@@ -1,17 +1,22 @@
 // Basic VGA Library Routines .
-#include "bios.h"
-#include "conio.h"
-#include "ctype.h"
-#include "fstream.h"
-#include "iomanip.h"
-#include "math.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#include "svga.h"
+
+#include <bios.h>
+#include <math.h>
+#include <mode.h>
+#include <stdlib.h>
+
+#ifndef M_PI
+#define M_PI 3.1415f
+#endif
+
+#ifndef rad
+#define rad(o)     (o * M_PI) / 180
+#endif
 
 #define setcolorpal() set_palette(dpalette);
 #define fadeout()     set_palette(dpalette);
+
+#define sgn(x) ((x < 0) ? -1 : ((x > 0) ? 1 : 0))
 
 byte curcolor = 0, tpalette[768], dpalette[768];
 
