@@ -1,10 +1,11 @@
-A 3D Graphics Library 
+3D Graphics Library
+
 Written By:  Karthik Kumar Viswanathan
 
-<Sound Second Release>
+<Stable Release>
 
 ========================================= 
-= Fully Written in Turbo C++            =
+= Fully Written in C++ 92               =
 = Completely Compatible with the BGI    = 
 = Can be used to make 2D Games as Well  =
 = Supports An Easy-Image System         =
