@@ -9,6 +9,31 @@ This Library is released with an accompanying [License](LICENSE.MD) which you
 agree to, when using this Library. There is also a [File ID Descriptor](FILE_ID.DIZ)
 used for Archival/Packaging.
 
+## BUILDING
+
+On a Modern Computer, you could **Cross-Compile** this with [OpenWatcom C++](https://github.com/open-watcom/open-watcom-v2/).
+More instructions on the [OpenWatcom GitHub Wiki](https://github.com/open-watcom/open-watcom-v2/wiki/OW-tools-usage-with-CMake).
+
+```shell
+cmake -G "Watcom WMake" -D CMAKE_SYSTEM_NAME=DOS -D CMAKE_SYSTEM_PROCESSOR=I86 -D CMAKE_C_FLAGS="-ml -k8192" -D CMAKE_CXX_FLAGS="-ml -k8192" -S . -B Build
+cmake --build Build
+```
+
+On **DOS** environments such as **DOSBox-X** or the real thing, pick your Compiler in [the Build Script](BUILD.BAT)
+and then Run:
+
+```shell
+BUILD.BAT
+```
+
+## DEMO
+
+Once built, you should be able to execute them:
+
+```shell
+RUNDEMO.BAT
+```
+
 ## ACKNOWLEDGMENTS
 
 I thank **David Brackeen** and **Johan Peitz** for their help and tutorials on
