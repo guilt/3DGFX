@@ -1,22 +1,21 @@
-// Font Drawing Routines .
-#ifdef I24BIT
-#include <24pix.h>
-#else
-#include <defs.h>
-#endif
-#include <colors.h>
+// Font Drawing Routines.
+#ifndef INC_FONTS_H
+#define INC_FONTS_H
 
-// 8x8 Mini Bitmap ,Corrected .
+#include <PIXEL.H>
+#include <CANVAS.H>
 
-#define WIDTH    8
-#define MAXCHARS 256
+// 8x8 Mini Bitmap, Corrected.
+
+#define FONT_CHAR_WIDTH 8
+#define MAX_CHARS       256
 
 typedef struct
 {
-    byte chars[MAXCHARS][WIDTH];
+    byte chars[MAX_CHARS][FONT_CHAR_WIDTH];
 } font;
 
-font DEFAULT_FONT = {{
+const font DEFAULT_FONT = {{
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
 {   0,  0,  0,  0,  0,  0,  0,  0      },
@@ -275,42 +274,36 @@ font DEFAULT_FONT = {{
 {   0,  0,  0,  0,  0,  0,  0,  0      }
 }};
 
-void _dispchar(byte arr[WIDTH], int x = 0, int y = 0, int col = COLOR_WHITE,
-              int bol = COLOR_BLACK, int size = 1)
+void dispChar(byte arr[FONT_CHAR_WIDTH], int x = 0, int y = 0, int color = WHITE, int size = 1)
 {
     int i, j, k, p, q, cc;
-    for (i = 0; i < WIDTH; i++)
+    for (i = 0; i < FONT_CHAR_WIDTH; i++)
     {
-        for (j = 128, k = 0; k < WIDTH; k++, j /= 2)
+        for (j = 128, k = 0; k < FONT_CHAR_WIDTH; k++, j /= 2)
         {
             if (arr[i] & j)
-                cc = col;
+                cc = color;
             else
-                cc = bol;
+                cc = currentBackgroundColor;
             for (p = 0; p < size; p++)
             {
                 for (q = 0; q < size; q++)
                 {
-#ifdef I24BIT
-                    put24pixel(x + (k * size) + q, y + (i * size) + p,
-                               dpalette[(cc * 3)], dpalette[(cc * 3) + 1],
-                               dpalette[(cc * 3) + 2]);
-#else
-                    putpixel(x + (k * size) + q, y + (i * size) + p, cc);
-#endif
+                    putPixel(x + (k * size) + q, y + (i * size) + p, cc);
                 }
             }
         }
     }
 }
 
-void drawstring(char str[], int x = 0, int y = 0, int col = COLOR_WHITE,
-                int bol = COLOR_BLACK, int size = 1, font font_user = DEFAULT_FONT)
+void drawString(const char text[], int x = 0, int y = 0, int color = WHITE,
+                int size = 1, font userFont = DEFAULT_FONT)
 {
     int i = 0;
-    for (; str[i] != 0; i++)
+    for (; text[i] != 0; i++)
     {
-        _dispchar(font_user.chars[str[i]], x + (i * size * WIDTH), y, col, bol,
-                 size);
+        dispChar(userFont.chars[text[i]], x + (i * size * FONT_CHAR_WIDTH), y, color, size);
     }
 }
+
+#endif

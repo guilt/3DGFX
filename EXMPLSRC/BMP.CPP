@@ -1,21 +1,22 @@
 // Simple Bitmap Demo.
 
-#include <conio.h>
-#include <stdio.h>
-#include <bmp.h>
+#include <INPUT.H>
+#include <BITMAP.H>
+#include <FONTS.H>
 
 int main()
 {
-    bitmap* b = new bitmap;
-    graini();
-    printf("SwordFish");
-    loadbmp("kdemo1.bmp", *b);
-    drawbmp(*b, 0, 10);
-    loadbmp("kdemo2.bmp", *b);
-    drawbmp(*b, 95, 40);
-    loadbmp("kdemo3.bmp", *b);
-    drawbmp(*b, 190, 70);
-    getch();
-    graclo();
+    Bitmap* bitmap = new Bitmap;
+    graphicsInitialize();
+    loadBitmapInto("kdemo1.bmp", *bitmap);
+    drawBitmap(*bitmap, 0, 10);
+    loadBitmapInto("kdemo2.bmp", *bitmap);
+    drawBitmap(*bitmap, 95, 40);
+    loadBitmapInto("kdemo3.bmp", *bitmap);
+    drawBitmap(*bitmap, 190, 70);
+    drawString("SwordFish", 5, 185, RGBToIndexed(255, 255, 255), 1);
+    graphicsUpdate();
+    waitForKey();
+    graphicsClose();
     return 0;
 }

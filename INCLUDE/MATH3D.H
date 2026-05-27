@@ -1,14 +1,11 @@
 // File That Does 3D Point Manipulation.
+#ifndef INC_MATH3D_H
+#define INC_MATH3D_H
 
 #include <math.h>
+#include <CANVAS.H>
 
-#ifndef M_PI
-#define M_PI 3.1415f
-#endif             
 
-#ifndef rad
-#define rad(o)     (o * M_PI) / 180
-#endif
 
 double mod(double a)
 {
@@ -19,77 +16,115 @@ double mod(double a)
     return a;
 }
 
-struct tempp
+struct ProjectedPoint
 {
     double x, y;
-} pg, pg1, pg2;
+} projected, projected1, projected2;
 
-struct point3d
+#define MAX_POINTS 50
+
+struct Point3d
 {
     double x, y, z;
 };
 
-struct point3dc
+struct Point3dc
 {
     double r, o, z;
 };
 
-struct line3d
+struct Line3d
 {
-    point3d p1, p2;
+    Point3d p1, p2;
 };
 
-struct triangle3d
+struct Triangle3d
 {
-    point3d p1, p2, p3;
+    Point3d p1, p2, p3;
 };
 
-void trans(point3d& p, double x, double y, double z)
+void translate(Point3d& p, double x, double y, double z)
 {
     p.x += x;
     p.y += y;
     p.z += z;
 }
 
-void altrans(line3d& l, double x, double y, double z)
+void translateLine(Line3d& l, double x, double y, double z)
 {
-    trans(l.p1, x, y, z);
-    trans(l.p2, x, y, z);
+    translate(l.p1, x, y, z);
+    translate(l.p2, x, y, z);
 }
 
-void attrans(triangle3d& t, double x, double y, double z)
+void translateTriangle(Triangle3d& t, double x, double y, double z)
 {
-    trans(t.p1, x, y, z);
-    trans(t.p2, x, y, z);
-    trans(t.p3, x, y, z);
+    translate(t.p1, x, y, z);
+    translate(t.p2, x, y, z);
+    translate(t.p3, x, y, z);
 }
 
-void rtrans(double& x, double& y, int deg)
+void rotate2d(double& x, double& y, int deg)
 {
-    double r = rad(deg);
-    double x1, y1;
-    x1 = x * cos(r) - y * sin(r);
-    y1 = x * sin(r) + y * cos(r);
+    double r = degToRad(deg);
+    double x1 = x * cos(r) - y * sin(r);
+    double y1 = x * sin(r) + y * cos(r);
     x = x1;
     y = y1;
 }
 
-void rot(point3d& p, int degx, int degy, int degz)
+void rotate(Point3d& p, int degx, int degy, int degz)
 {
-    rtrans(p.y, p.z, degx);
-    rtrans(p.z, p.x, degy);
-    rtrans(p.x, p.y, degz);
+    rotate2d(p.y, p.z, degx);
+    rotate2d(p.z, p.x, degy);
+    rotate2d(p.x, p.y, degz);
 }
 
-void alrot(line3d& l, int degx, int degy, int degz)
+void rotateLine(Line3d& l, int degx, int degy, int degz)
 {
-    rot(l.p1, degx, degy, degz);
-    rot(l.p2, degx, degy, degz);
+    rotate(l.p1, degx, degy, degz);
+    rotate(l.p2, degx, degy, degz);
 }
 
-void atrot(triangle3d& t, int degx, int degy, int degz)
+void rotateTriangle(Triangle3d& t, int degx, int degy, int degz)
 {
-    rot(t.p1, degx, degy, degz);
-    rot(t.p2, degx, degy, degz);
-    rot(t.p3, degx, degy, degz);
+    rotate(t.p1, degx, degy, degz);
+    rotate(t.p2, degx, degy, degz);
+    rotate(t.p3, degx, degy, degz);
 }
+
+
+struct ProjectionState
+{
+    double xScale;
+    double yScale;
+    double zScale;
+    int centerX;
+    int centerY;
+    double thetaOffset;
+
+    ProjectionState() : xScale(4.5), yScale(4.5), zScale(1.125),
+                        centerX(160), centerY(100), thetaOffset(0.0) {}
+};
+
+inline ProjectedPoint projectPoint(const Point3d& p, const ProjectionState& ps)
+{
+    ProjectedPoint pp;
+    pp.x = ps.centerX + p.x * ps.xScale;
+    pp.y = ps.centerY - p.y * ps.yScale;
+    pp.x -= p.z * ps.zScale;
+    pp.y += p.z * ps.zScale;
+    return pp;
+}
+
+inline ProjectedPoint projectPointC(const Point3dc& p, const ProjectionState& ps)
+{
+    ProjectedPoint pp;
+    double ot = ps.thetaOffset;
+    pp.x = ps.centerX + p.r * cos(ot) * ps.xScale;
+    pp.y = ps.centerY - p.r * sin(ot) * ps.yScale;
+    pp.x -= p.z * ps.zScale;
+    pp.y += p.z * ps.zScale;
+    return pp;
+}
+
+#endif

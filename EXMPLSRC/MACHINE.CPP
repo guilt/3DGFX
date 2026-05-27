@@ -8,140 +8,136 @@
 //  Up/Down to Move
 //      Esc to Quit
 
-#include <conio.h>
-#include <mathren.h>
+#include <INPUT.H>
+#include <RENDER.H>
 
 int main()
 {
     /*
-    Array Index :
+    Array Index:
     Base 0
     Primary Arm 1
     Auxilliary Arm 2
     Moving Rod 3
     */
-    char c, d;
-    int flag = 2, armauxdeg = 0, bdeg = 0;
-    double levermovt = 0, basemovt = 0;
-    object* o = new object[4];
-    if (!o)
+    int key;
+    int selectedPart = 2, auxiliaryAngle = 0, primaryAngle = 0;
+    double leverOffset = 0, baseOffset = 0;
+    Object3d* parts = new Object3d[4];
+    if (!parts)
     {
         return 1;
     }
-    graini();
-    readobj("base.msh", o[0]);
-    readobj("armb.msh", o[1]);
-    readobj("lever.msh", o[2]);
-    readobj("armaux.msh", o[3]);
+    graphicsInitialize();
+    readObject("base.msh", parts[0]);
+    readObject("armb.msh", parts[1]);
+    readObject("lever.msh", parts[2]);
+    readObject("armaux.msh", parts[3]);
     do
     {
-        drawobj(o[0], 1);
-        drawobj(o[1], 2);
-        drawobj(o[3], 3);
-        drawobj(o[2], 4);
-        c = getch();
-        if (c == '1')
+        drawObject(parts[0], 1);
+        drawObject(parts[1], 2);
+        drawObject(parts[3], 3);
+        drawObject(parts[2], 4);
+        graphicsUpdate();
+        key = readKey();
+        if (key == KEY_1)
         {
-            flag = 0;
+            selectedPart = 0;
         }
-        if (c == '2')
+        if (key == KEY_2)
         {
-            flag = 1;
+            selectedPart = 1;
         }
-        if (c == '3')
+        if (key == KEY_3)
         {
-            flag = 2;
+            selectedPart = 2;
         }
-        if (c == '4')
+        if (key == KEY_4)
         {
-            flag = 3;
+            selectedPart = 3;
         }
-        if (c == 0)
+        drawObject(parts[0], 0);
+        drawObject(parts[1], 0);
+        drawObject(parts[3], 0);
+        drawObject(parts[2], 0);
+        if (key == KEY_UP)
         {
-            d = getch();
-        }
-        drawobj(o[0], 0);
-        drawobj(o[1], 0);
-        drawobj(o[3], 0);
-        drawobj(o[2], 0);
-        if (d == 72)
-        {
-            if (flag == 0)
+            if (selectedPart == 0)
             {
-                if (armauxdeg < 9)
+                if (auxiliaryAngle < 9)
                 {
-                    aorot(o[2], 0, 10, 0);
-                    aorot(o[3], 0, 10, 0);
-                    armauxdeg++;
+                    objectRotate(parts[2], 0, 10, 0);
+                    objectRotate(parts[3], 0, 10, 0);
+                    auxiliaryAngle++;
                 }
             }
-            if (flag == 1)
+            if (selectedPart == 1)
             {
-                if (bdeg < 9)
+                if (primaryAngle < 9)
                 {
-                    aorot(o[1], 0, 10, 0);
-                    aorot(o[2], 0, 10, 0);
-                    aorot(o[3], 0, 10, 0);
-                    bdeg++;
+                    objectRotate(parts[1], 0, 10, 0);
+                    objectRotate(parts[2], 0, 10, 0);
+                    objectRotate(parts[3], 0, 10, 0);
+                    primaryAngle++;
                 }
             }
-            if (flag == 2)
+            if (selectedPart == 2)
             {
-                if (levermovt < 2)
+                if (leverOffset < 2)
                 {
-                    aotrans(o[2], 0, 2, 0);
-                    levermovt++;
+                    objectTranslate(parts[2], 0, 2, 0);
+                    leverOffset++;
                 }
             }
-            if (flag == 3)
+            if (selectedPart == 3)
             {
-                if (basemovt < 4)
+                if (baseOffset < 4)
                 {
-                    aotrans(o[0], 2, 0, 0);
-                    basemovt++;
+                    objectTranslate(parts[0], 2, 0, 0);
+                    baseOffset++;
                 }
             }
         }
-        if (d == 80)
+        if (key == KEY_DOWN)
         {
-            if (flag == 0)
+            if (selectedPart == 0)
             {
-                if (armauxdeg > -9)
+                if (auxiliaryAngle > -9)
                 {
-                    aorot(o[2], 0, -10, 0);
-                    aorot(o[3], 0, -10, 0);
-                    armauxdeg--;
+                    objectRotate(parts[2], 0, -10, 0);
+                    objectRotate(parts[3], 0, -10, 0);
+                    auxiliaryAngle--;
                 }
             }
-            if (flag == 1)
+            if (selectedPart == 1)
             {
-                if (bdeg > -9)
+                if (primaryAngle > -9)
                 {
-                    aorot(o[1], 0, -10, 0);
-                    aorot(o[2], 0, -10, 0);
-                    aorot(o[3], 0, -10, 0);
-                    bdeg--;
+                    objectRotate(parts[1], 0, -10, 0);
+                    objectRotate(parts[2], 0, -10, 0);
+                    objectRotate(parts[3], 0, -10, 0);
+                    primaryAngle--;
                 }
             }
-            if (flag == 2)
+            if (selectedPart == 2)
             {
-                if (levermovt > -2)
+                if (leverOffset > -2)
                 {
-                    aotrans(o[2], 0, -2, 0);
-                    levermovt--;
+                    objectTranslate(parts[2], 0, -2, 0);
+                    leverOffset--;
                 }
             }
-            if (flag == 3)
+            if (selectedPart == 3)
             {
-                if (basemovt > -4)
+                if (baseOffset > -4)
                 {
-                    aotrans(o[0], -2, 0, 0);
-                    basemovt--;
+                    objectTranslate(parts[0], -2, 0, 0);
+                    baseOffset--;
                 }
             }
-        }
-        d = -1;
-    } while (c != 27);
-    graclo();
+        };
+    } while (key != KEY_ESC);
+    graphicsClose();
     return 0;
 }

@@ -1,20 +1,21 @@
 // Easy Image Demo.
 
-#include <conio.h>
-#include <defs.h>
-#include <image.h>
-#include <fonts.h>
+#include <INPUT.H>
+#include <IMAGE.H>
+#include <FONTS.H>
 
 int main()
 {
     image i("odie.im");
-    graini();
-    loadfilepalette();
+    graphicsInitialize();
+    setPaletteFromFile(DEFAULT_PAL);
     i.draw(0, 0);
-    drawstring("Odie!", 180, 66, 4, 0, 2);
-    getch();
-    setbwpal(); // Watch the Fun!
-    getch();
-    graclo();
+    drawString("Odie!", 180, 66, 4, 2);
+    graphicsUpdate();
+    waitForKey();
+    setBwPalette(); // Watch the Fun!
+    graphicsUpdate();
+    waitForKey();
+    graphicsClose();
     return 0;
 }

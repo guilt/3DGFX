@@ -1,38 +1,39 @@
 // 3D Graphs with Normal Contours.
 
-#include <conio.h>
-#include <mathren.h>
+#include <INPUT.H>
+#include <RENDER.H>
 
 int main()
 {
-    double r, s;
-    point3d p1;
-    graini();
-    clearviewport();
-    for (r = -8; r <= 8; r += 0.01)
+    double xPos, zPos;
+    Point3d point;
+    graphicsInitialize();
+    graphicsClear();
+    for (xPos = -8; xPos <= 8; xPos += 0.01)
     {
-        p1.x = r;
-        for (s = -8; s <= 8; s += 0.01)
+        point.x = xPos;
+        for (zPos = -8; zPos <= 8; zPos += 0.01)
         {
-            p1.z = s;
+            point.z = zPos;
 
             // Choose from among any equation Below.
 
-            // p1.y=((p1.z*p1.x)*((p1.x*p1.x)-(p1.z*p1.z))/((p1.x*p1.x)+(p1.z*p1.z)));
+            // point.y=((point.z*point.x)*((point.x*point.x)-(point.z*point.z))/((point.x*point.x)+(point.z*point.z)));
 
-            // p1.y=0.1*(p1.z*p1.z)-0.5*(p1.x*p1.x);
+            // point.y=0.1*(point.z*point.z)-0.5*(point.x*point.x);
 
-            p1.y = 0.3 * (p1.z * p1.z) + 0.3 * (p1.x * p1.x);
+            point.y = 0.3 * (point.z * point.z) + 0.3 * (point.x * point.x);
 
-            // p1.y=(p1.x*p1.z)/((p1.z*p1.z)+(p1.x*p1.x))*20;
+            // point.y=(point.x*point.z)/((point.z*point.z)+(point.x*point.x))*20;
 
-            // p1.y=(((p1.x*p1.x)+1)/((p1.z*p1.z)+1))*0.4;
+            // point.y=(((point.x*point.x)+1)/((point.z*point.z)+1))*0.4;
 
-            conplot(p1, 14);
+            contourPlot(point, 14);
         }
     }
-    drawaxis(1);
-    getch();
-    graclo();
+    drawAxis(1);
+    graphicsUpdate();
+    waitForKey();
+    graphicsClose();
     return 0;
 }

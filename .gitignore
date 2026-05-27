@@ -4,7 +4,9 @@
 # exclude patterns (uncomment them if you want to use them):
 
 *.EXE
+*.ERR
 *.OBJ
+*.LOG
 
 BUILD
 CMAKE*BUILD*

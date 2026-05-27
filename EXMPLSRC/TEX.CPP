@@ -1,62 +1,65 @@
 // Planes and Bitmap Sizing Demo.
 
-#include <conio.h>
-#include <bmp.h>
-#include <mathren.h>
+#include <INPUT.H>
+#include <BITMAP.H>
+#include <RENDER.H>
 
 int main()
 {
-    int x, y;
-    point3d p;
-    int color;
-    bitmap b;
-    int w;
-    int h;
-    double cf = 2; // Compression Factor of Image .
-    loadbmp("demog.bmp", b);
-    w = b.h.width / 2;
-    h = b.h.height / 2;
-    graini();
-    initbmp(b);
-    clearviewport();
-    for (x = -1 * w; x < w; x++)
+    int texelX, texelY;
+    Point3d point;
+    int pixelColor;
+    Bitmap bitmap;
+    int halfWidth;
+    int halfHeight;
+    double compressionFactor = 2;
+    loadBitmapInto("demog.bmp", bitmap);
+    halfWidth = bitmap.h.width / 2;
+    halfHeight = bitmap.h.height / 2;
+    graphicsInitialize();
+    initBitmap(bitmap);
+    graphicsClear();
+    for (texelX = -1 * halfWidth; texelX < halfWidth; texelX++)
     {
-        p.x = x / (xscale * cf);
-        for (y = -1 * h; y < h; y++)
+        point.x = texelX / (xScale * compressionFactor);
+        for (texelY = -1 * halfHeight; texelY < halfHeight; texelY++)
         {
-            p.y = y / (yscale * cf);
-            p.z = 0;
-            color = b.bmpbuf[(x + w) % b.h.width][(y + h) % b.h.height];
-            drawpoint(p, color);
+            point.y = texelY / (yScale * compressionFactor);
+            point.z = 0;
+            pixelColor = bitmap.data[(((texelY + halfHeight) % bitmap.h.height) * bitmap.h.width + ((texelX + halfWidth) % bitmap.h.width))];
+            drawPoint(point, pixelColor);
         }
     }
-    getch();
-    clearviewport();
-    for (x = -1 * w; x < w; x++)
+    graphicsUpdate();
+    waitForKey();
+    graphicsClear();
+    for (texelX = -1 * halfWidth; texelX < halfWidth; texelX++)
     {
-        p.z = x / (zscale * cf);
-        for (y = -1 * h; y < h; y++)
+        point.z = texelX / (zScale * compressionFactor);
+        for (texelY = -1 * halfHeight; texelY < halfHeight; texelY++)
         {
-            p.x = y / (xscale * cf);
-            p.y = 0;
-            color = b.bmpbuf[(x + w) % b.h.width][(y + h) % b.h.height];
-            drawpoint(p, color);
+            point.x = texelY / (xScale * compressionFactor);
+            point.y = 0;
+            pixelColor = bitmap.data[(((texelY + halfHeight) % bitmap.h.height) * bitmap.h.width + ((texelX + halfWidth) % bitmap.h.width))];
+            drawPoint(point, pixelColor);
         }
     }
-    getch();
-    clearviewport();
-    for (x = -1 * w; x < w; x++)
+    graphicsUpdate();
+    waitForKey();
+    graphicsClear();
+    for (texelX = -1 * halfWidth; texelX < halfWidth; texelX++)
     {
-        p.y = x / (yscale * cf);
-        for (y = -1 * h; y < h; y++)
+        point.y = texelX / (yScale * compressionFactor);
+        for (texelY = -1 * halfHeight; texelY < halfHeight; texelY++)
         {
-            p.z = y / (zscale * cf);
-            p.x = 0;
-            color = b.bmpbuf[(x + w) % b.h.width][(y + h) % b.h.height];
-            drawpoint(p, color);
+            point.z = texelY / (zScale * compressionFactor);
+            point.x = 0;
+            pixelColor = bitmap.data[(((texelY + halfHeight) % bitmap.h.height) * bitmap.h.width + ((texelX + halfWidth) % bitmap.h.width))];
+            drawPoint(point, pixelColor);
         }
     }
-    getch();
-    graclo();
+    graphicsUpdate();
+    waitForKey();
+    graphicsClose();
     return 0;
 }

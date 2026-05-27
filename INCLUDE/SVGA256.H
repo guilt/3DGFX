@@ -1,4 +1,6 @@
 // Hi-Res Driver .
+#ifndef INC_SVGA256_H
+#define INC_SVGA256_H
 
 /************************************************/
 /*                                              */
@@ -32,4 +34,6 @@ extern int far _Cdecl Svga256_fdriver[];
 #define NOR_PUT        6
 #define NAND_PUT       7
 #define TRANS_COPY_PUT 8 /* Doesn't work with 16-color drivers */
+#endif
+
 #endif

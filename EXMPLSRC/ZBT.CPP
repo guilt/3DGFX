@@ -1,94 +1,91 @@
-// Textured Z-Buffered Object Demo .
+// Textured Z-Buffered Object Demo.
 
 // Keys to Press:
-// x / y / z  : Axis (Default is z)
-// Left/Right : to Move Counterclockwise on Axis
-//        Esc :  to Quit
+// x / y / z: Axis (Default is z)
+// Left/Right: to Move Counterclockwise on Axis
+//        Esc: to Quit
 
 #define IHSR
 #define IZBUF
 #define IZCLIP
 
-#include <conio.h>
-#include <tmathren.h>
+#include <INPUT.H>
+#include <RENDER.H>
 
 int main()
 {
-    char c, d;
-    int flag = 2; // Default Z
-    int v = 1, rot = 10;
-    tobject o, o1;
-    mkzbuf();
-    readtobj("texo1.msh", o); // Load The Objects .... !
-    readtobj("texo2.msh", o1);
-    graini();
-    loadtex("tex.tex"); // Load Common Textures .... !
-    rinittex();
-    atotrans(o1, 14, 14, 14);
+    int key;
+    int selectedAxis = 2;
+    int direction = 1, rotationIncrement = 10;
+    TexturedObject object1, object2;
+    zBufferCreate();
+    loadTexturedObjectInto("texo1.msh", object1);
+    loadTexturedObjectInto("texo2.msh", object2);
+    graphicsInitialize();
+    loadTextures("tex.tex");
+    loadUsedTextures(object1);
+    loadUsedTextures(object2);
+    objectTranslate(object2, 14, 14, 14);
     do
     {
-        clearviewport();
-        clrzbuf();
-        drawtobj(o);
-        drawtobj(o1);
-        c = getch();
-        if (c == 'x')
+        graphicsClear();
+        zBufferClear();
+        drawTexturedObject(object1);
+        drawTexturedObject(object2);
+        graphicsUpdate();
+        key = readKey();
+        if (key == KEY_X)
         {
-            flag = 0;
+            selectedAxis = 0;
         }
-        if (c == 'y')
+        if (key == KEY_Y)
         {
-            flag = 1;
+            selectedAxis = 1;
         }
-        if (c == 'z')
+        if (key == KEY_Z)
         {
-            flag = 2;
+            selectedAxis = 2;
         }
-        if (c == 0)
+        if (key == KEY_LEFT)
         {
-            d = getch();
-        }
-        if (d == 75)
-        {
-            v = 1;
-            if (flag == 0)
+            direction = 1;
+            if (selectedAxis == 0)
             {
-                atorot(o, v * rot, 0, 0);
-                atorot(o1, v * rot, 0, 0);
+                objectRotate(object1, direction * rotationIncrement, 0, 0);
+                objectRotate(object2, direction * rotationIncrement, 0, 0);
             }
-            if (flag == 1)
+            if (selectedAxis == 1)
             {
-                atorot(o, 0, v * rot, 0);
-                atorot(o1, 0, v * rot, 0);
+                objectRotate(object1, 0, direction * rotationIncrement, 0);
+                objectRotate(object2, 0, direction * rotationIncrement, 0);
             }
-            if (flag == 2)
+            if (selectedAxis == 2)
             {
-                atorot(o, 0, 0, v * rot);
-                atorot(o1, 0, 0, v * rot);
+                objectRotate(object1, 0, 0, direction * rotationIncrement);
+                objectRotate(object2, 0, 0, direction * rotationIncrement);
             }
         }
-        if (d == 77)
+        if (key == KEY_RIGHT)
         {
-            v = -1;
-            if (flag == 0)
+            direction = -1;
+            if (selectedAxis == 0)
             {
-                atorot(o, v * rot, 0, 0);
-                atorot(o1, v * rot, 0, 0);
+                objectRotate(object1, direction * rotationIncrement, 0, 0);
+                objectRotate(object2, direction * rotationIncrement, 0, 0);
             }
-            if (flag == 1)
+            if (selectedAxis == 1)
             {
-                atorot(o, 0, v * rot, 0);
-                atorot(o1, 0, v * rot, 0);
+                objectRotate(object1, 0, direction * rotationIncrement, 0);
+                objectRotate(object2, 0, direction * rotationIncrement, 0);
             }
-            if (flag == 2)
+            if (selectedAxis == 2)
             {
-                atorot(o, 0, 0, v * rot);
-                atorot(o1, 0, 0, v * rot);
+                objectRotate(object1, 0, 0, direction * rotationIncrement);
+                objectRotate(object2, 0, 0, direction * rotationIncrement);
             }
         }
-        d = -1;
-    } while (c != 27);
-    rmzbuf();
-    graclo();
+    } while (key != KEY_ESC);
+    zBufferDestroy();
+    graphicsClose();
     return 0;
 }

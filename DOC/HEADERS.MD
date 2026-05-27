@@ -1,80 +1,82 @@
 # Header Files
 
-## Header File Hierarchy 
+All 12 headers live under `INCLUDE/`.  The old `EINCLUDE/` has been merged in,
+and `DEFS.H` was absorbed into `CANVAS.H`.
+
+## Header Tree
 
 ```
-   MODE.H      GRAPHICS.H
-       \         /
-      VGA.H     /
-          \    /
-           DEFS.H       MATH3D.H
-          /  / |  \      |
-         /  /  |   \     |
-        /  /   |    \    |
-       / BMP.H TEX.H \   |       
-      /               MATHREN.H
-    ZBUF.H               |
-        \                |
-         \___________    |
-                     \   |
-                     TRIREN.H
-                        |                     
-                     TMATHREN.H
+TYPES.H          types, colour constants, RGBToIndexed, sign/math helpers
+PLATFORM.H       WIN/DOS detection, <fstream> compat
+CANVAS.H         VGA constants, putPixel/drawLine/palette, Canvas class,
+|                VgaCanvas/GdiCanvas/BgiCanvas, graphicsInit/Close/Update,
+|                GDI callbacks
++-- INPUT.H      readKey, keyPressed, waitForKey, pollKeyboard,
+|                escPressed, clearKeyBuffer
+|                (no CANVAS.H dependency)
++-- MATH3D.H     Point3d, translate/rotate, ProjectionState, projectPoint
++-- RENDER.H     Wireframe + 2D + triangle raster + Z-buffer + textures
++-- PIXEL.H      vgaIndexToRGB, putPixelRGB/YUV conversion, Pixel24 class
++-- BITMAP.H     BMP loader/renderer
++-- TEXTURE.H    Texture loader
++-- IMAGE.H      Easy Image loader, readPaletteFile, image class
++-- FONTS.H      8x8 bitmap font + drawString
++-- SVGA256.H    SVGA BGI driver header
 ```
 
------------------------------------------------------------------------------
+## Platform Selection (BUILD.BAT)
 
-## Extended Header File Hierarchy: 
+| Command         | Compiler                        | `%OUT_TO%` | `%LIBS%` |
+|-----------------|---------------------------------|------------|----------|
+| `BUILD MINGW`   | MinGW-w64 GCC (Windows GDI)     | `-o`       | `-static-libgcc -static-libstdc++ -static -mwindows -lgdi32 -luser32` |
+| `BUILD MSVC`    | MSVC (Windows GDI)              | `/Fe`      | `gdi32.lib user32.lib` |
+| `BUILD BCC`     | Borland C++ (DOS)               | `-o`       | *(empty)* |
+| `BUILD WCL`     | OpenWatcom C++ (DOS)            | `-fe=`     | *(empty)* |
+| `BUILD DJGPP`   | DJGPP GCC (DOS)                 | `-o`       | *(empty)* |
+| `BUILD CL`      | Microsoft C/C++ for DOS         | `/Fe`      | *(empty)* |
 
+## Feature Flags (`-D`)
+
+| Flag       | Effect                             | Status      |
+|------------|------------------------------------|-------------|
+| `-DWIN`    | Windows GDI backend                | Active      |
+| `-DIBGI`   | Borland BGI backend                | Active      |
+| `-DISVGA`  | SVGA BGI hi-res (needs `-DIBGI`)   | Active      |
+| `-DIISO`   | Isometric projection engine        | Active      |
+| `-DIZCLIP` | Z near/far plane clipping          | Active      |
+| `-DIHSR`   | Hidden surface removal             | Active      |
+| `-DIZBUF`  | Z-buffering                        | Active      |
+
+## Build
+
+```shell
+BUILD.BAT MINGW        # all 12 examples
+BUILD.BAT MSVC
+BUILD.BAT BCC
 ```
-DEFS.H  IMAWRI.H
- \
-  24PIX.H
-   \
-    FONTS.H
-     \
-     IMAGE.H
+
+Single file:
+```shell
+g++ -std=c++98 -DWIN -IINCLUDE EXMPLSRC\TRI.CPP -o TRI.EXE \
+    -static-libgcc -static-libstdc++ -static -mwindows -lgdi32 -luser32
 ```
 
------------------------------------------------------------------------------
+## Key API
 
-## Description of Header Files
+| Category | Functions |
+|----------|-----------|
+| Init     | `graphicsInitialize()`, `graphicsClose()` |
+| Display  | `graphicsUpdate()`, `graphicsClear()`, `graphicsDelay(ms)` |
+| Pixel    | `putPixel(x, y)`, `putPixelRGB(x, y, r, g, b)`, `putPixelFast(x,y,c)` |
+| 2D       | `drawLine(x1, y1, x2, y2)`, `drawRect(l, t, r, b)`, `drawCircle(cx, cy, r)` |
+| Palette  | `setPalette(i, r, g, b)`, `setPaletteArray(p, n)`, `updateSystemPalette()`,
+|          | `setBlackWhitePalette()` |
+| 3D       | `readObject()`, `drawObject()`, `objectRotate()`, `objectTranslate()`,
+|          | `drawAxis()`, `contourPlot()`, `sphereContourPlot()` |
+| Screen   | `setMode(mode)`, `clearScreen()` |
+| Input    | `readKey()`, `keyPressed()`, `waitForKey()`, `pollKeyboard()`, `escPressed()` |
+| Colour   | `RGBToIndexed(r, g, b)`, `vgaIndexToRGB()`, `rgbToVgaIndex()`,
+|          | `rgbToY/U/V()`, `yuvToR/G/B()` |
 
-- `    MODE.H` :  Deals with Lowest Level Of Graphics, Initialisation etc. 
-- `     VGA.H` :  Deals with Some Basic Functions such as `putpixel()`. 
-- `  MATH3D.H` :  Contains the Basic Data Structures and the Code to Deal with
-                  their rotation etc.
-- ` MATHREN.H` :  Contains Some Algorithms to draw 3D Lines and Points and
-                  Meshed Objects etc. Here, you can alter the Basic Rendering
-                  Engine.
-- `    DEFS.H` :  Used for Basic Graphics Initialisation. Switch between BGI and MODE Graphics.
-- `     BMP.H` :  Bitmap loading. Surface Programming is highly Encouraged. 
-- `     TEX.H` :  Texture loading. You should either include this one or `BMP.H`, not both.
-- `    ZBUF.H` :  Contains the Z-Buffering Algorithm. 
-- `  TRIREN.H` :  Basic Triangle Rendering Program. Adapted From the 3D
-                  Black Hole.
-- `TMATHREN.H` :  Contains Routines To Draw Textured Objects. 
-- `   24PIX.H` :  Allows one to Run-Time Dither a **24-Bit** Pixel into an **8-Bit**
-                  one and is pretty useful for getting lots of Graphic Effects. 
-- `   FONTS.H` :  A sample **8x8** System Font Bitmap. 
-- `   IMAGE.H` :  Used to draw the easy Images themselves.
-- `  IMAWRI.H` :  Used for converting **8-Bit** BMPs into easy Images. 
-
------------------------------------------------------------------------------
-
-## Macros
-
-Use these Macros to change the way things are drawn: 
-
-- `     IBGI` :  Use The Full Functionality of the BGI
-- `    ISVGA` :  Use the Hi-Res SVGA Driver; Requires `IBGI`.
-- `   I24BIT` :  Use the Palette Reduction technology. Requires not `IBGI`.
-- `     IISO` :  Use an Isometric Engine for Rendering
-- `   IZCLIP` :  Use Z-Clipping
-- `     IHSR` :  Use Hidden Surface Removal
-- `    IZBUF` :  Use Z-Buffer
- 
-Before including any of the Header Files, define these Macros by using
-the `#define` pre-processor macros to use them.
-
------------------------------------------------------------------------------
+All drawing functions default to `currentColor`. `graphicsClear()` uses `currentBackgroundColor`.
+Settable via `setColor()`/`setBackgroundColor()`, readable via `getColor()`/`getBackgroundColor()`.

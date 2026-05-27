@@ -1,37 +1,38 @@
-// Surfaces with Textures on them ....
+// Surfaces with Textures on them....
 
-#include <conio.h>
-#include <bmp.h>
-#include <mathren.h>
+#include <INPUT.H>
+#include <BITMAP.H>
+#include <RENDER.H>
 
 int main()
 {
-    int x, y;
-    point3d p;
-    int color;
-    bitmap b;
-    int w;
-    int h;
-    int bzcf = 4; // Plane Compression Factors .
-    int bxcf = 1;
-    loadbmp("intex.bmp", b);
-    w = b.h.width / 2;
-    h = b.h.height / 2;
-    graini();
-    initbmp(b);
-    clearviewport();
-    for (x = -1 * w; x < w; x++)
+    int texelX, texelY;
+    Point3d point;
+    int pixelColor;
+    Bitmap bitmap;
+    int halfWidth;
+    int halfHeight;
+    int zCompression = 4;
+    int xCompression = 1;
+    loadBitmapInto("intex.bmp", bitmap);
+    halfWidth = bitmap.h.width / 2;
+    halfHeight = bitmap.h.height / 2;
+    graphicsInitialize();
+    initBitmap(bitmap);
+    graphicsClear();
+    for (texelX = -1 * halfWidth; texelX < halfWidth; texelX++)
     {
-        p.z = x / (zscale * bzcf);
-        for (y = -1 * h; y < h; y++)
+        point.z = texelX / (zScale * zCompression);
+        for (texelY = -1 * halfHeight; texelY < halfHeight; texelY++)
         {
-            p.x = y / (xscale * bxcf);
-            color = b.bmpbuf[(x + w) % b.h.width][(y + h) % b.h.height];
-            p.y = 0.015 * (-1 * (p.z * p.z) + (p.x * p.x));
-            drawpoint(p, color);
+            point.x = texelY / (xScale * xCompression);
+            pixelColor = bitmap.data[(((texelY + halfHeight) % bitmap.h.height) * bitmap.h.width + ((texelX + halfWidth) % bitmap.h.width))];
+            point.y = 0.015 * (-1 * (point.z * point.z) + (point.x * point.x));
+            drawPoint(point, pixelColor);
         }
     }
-    getch();
-    graclo();
+    graphicsUpdate();
+    waitForKey();
+    graphicsClose();
     return 0;
 }

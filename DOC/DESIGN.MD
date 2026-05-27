@@ -1,56 +1,17 @@
 # Library Design
 
-Some amount of 3D has been put into these Programs. Basically, 3D Surfaces are
-drawn using the equation of the shape, such as surfaces. For having solid
-shapes, use plot(); For countoured ones, use conplot(). For spherically countoured
-shapes, use sconplot(). Function sconplot() has been written to show the curvature
-with angles theta and phi, in spherical coordinates. Translation (linear movement)
-and Scaling are pretty easy, though the code isn't given here. They use: 
+## 3D Pipeline
 
-```
-   x' = x + v(x).t + (1/2)a(x).t^2
-   y' = y + v(y).t + (1/2)a(y).t^2
-   z' = z + v(z).t + (1/2)a(z).t^2
-```
+Wireframe objects are drawn via `drawPoint()` / `drawLine()` / `drawTriangle()` using
+the projection defined by `projPoint()` / `projPoint1()` / `projPoint2()` (perspective by
+default, isometric with `-DIISO`).  The projection parameters (`xScale`, `yScale`,
+`zScale`) are globals set in `RENDER.H`; `midX`/`midY` are macros for the screen centre.
 
-and then update them:
+Contour surfaces use `contourPlot()` / `sphereContourPlot()` for spherical coordinates.
 
-```
-   x' = a.x
-   y' = b.y
-   z' = c.z
-```
+## Coordinate System
 
-The rotation, however derives it's formula from polar coordinates. 
-where in a 2D System of x and y, 
-
-```
-   R = r cos (theta) i^ + r sin (theta) j^
-```
-
-and is replaced by
-
-```
-   R = r cos (theta + R) i^ + r sin (theta + R) j^
-```
-
-and the formulae are applied for  cos (theta + R) and sin (theta + R), giving
-the expressions user in rtrans(), where
-
-```
-   x  = r cos (theta)
-   y  = r sin (theta)
-```
-
-and to rotate-translate:
-
-```
-   x' = r cos (theta + R)
-   y' = r sin (theta + R)
-```
-
-The default xyz System is drawn as: 
-
+Right-handed:
 ```
     Y
     ^
@@ -58,19 +19,14 @@ The default xyz System is drawn as:
     |-----> X
    /
   /
- v 
+ v
 Z
 ```
 
-which is a right-handed system. 
-
-There is yet another Engine, which functions differently. This is the Isometric Engine,
-where the octant is drawn as: 
-
+Isometric (`-DIISO`):
 ```
         Y
         ^
-        |
         |
        / \
       /   \
@@ -78,59 +34,79 @@ where the octant is drawn as:
     Z       X
 ```
 
-The Objects are drawn as follows: 
+## Object File Format
 
-Choose the number of vertices of the Object 'n'. Then Plot them as per
-the shape of the object. Name the vertices as `0, 1, 2. .... n-1`. 
-Then write out the `l` lines that are to be joined in terms of the endpoints
-,such as `1,2` (line joining vertex `1` and vertex `2`). Now after all the `l`
-lines are completed, write out to a text file, whose format is: 
-
+Wireframe (.MSH):
 ```
-   n
-   x(0),y(0),z(0)
-   x(1),y(1),z(2)
-   .
-   .
-   .
-   x(n-1),y(n-1),z(n-1)
-   l
-   v(0)1,v(0)2
-   v(1)1,v(1)2
-   .
-   .
-   .
-   v(l-1)1,v(l-1)2
+n
+x0, y0, z0
+...
+xN, yN, zN
+l
+v1, v2
+...
 ```
 
-The Textured Objects have a small Change: 
-
-The Lines are replaced by Textured Triangles, whose elements are written as: 
-
+Textured (.MSH):
 ```
-   v(0)1,v(0)2,v(0)3:t(0)
-```
-
-Where `t(0)` is the **Texture Number** as defined in the `TEX.TEX` File: 
-
-```
-   nt
-   t(0)
-   t(1)
-   .
-   .
-   .
-   t(nt-1)
+n
+x0, y0, z0
+...
+xN, yN, zN
+l
+v1, v2, v3: t
+...
 ```
 
-Some samples have been provided. Of course, you can use
-your own textures! 
+Texture list (.TEX):
+```
+nt
+tex0.BMP
+...
+```
 
-This covers basic 3D, But more graphics code will have to go into it, to get
-a swell 3D Rendering program. You can extend this library to support Lighting, 
-by making use of the **24-bit to 8-bit** palette reduction system. 
+## Colour System
 
-The Graphics Library was first written with the **BGI**. Now this is a
-somewhat independent library. Backward Compatibility with the **BGI** is
-Provided. "Some" Features of the Library are not designed to work with **BGI**
-because the **BGI** can work on old untested hardware.
+- **Indices 0?15**: Standard BGI/VGA colours (`BLACK`, `BLUE`, ?, `WHITE`).
+  Use `putPixel(x, y, RED)` for direct BGI-compatible output.
+- **Indices 16?255**: 5?8?6 RGB cube (240 colours).
+  Use `putPixelRGB(x, y, r, g, b)` or `RGBToIndexed(r, g, b)`.
+- `initializeRGBPalette()` sets up the full palette.
+- `vgaIndexToRGB()` / `rgbToVgaIndex()` convert between index and RGB.
+
+## Palette Abstraction
+
+| Function | Purpose |
+|----------|---------|
+| `setPalette(i, r, g, b)` | Sets one entry in `defaultPalette` |
+| `setPaletteArray(p, n)` | Bulk copy into `defaultPalette` |
+| `updateSystemPalette()` | Commits `defaultPalette` to VGA DAC (DOS) or GDI DIB colour table (Windows) |
+| `graphicsUpdate()` | Flushes framebuffer to screen (Windows: `present()`, DOS: no-op) |
+| `graphicsClear()` | Fills screen with `currentBackgroundColor` (uses `memset`) |
+| `graphicsDelay(ms)` | Millisecond sleep for frame timing (Windows: `Sleep`, DOS: busy loop) |
+
+## Keyboard Input
+
+Provided by `<INPUT.H>`:
+
+| Function | Purpose |
+|----------|---------|
+| `readKey()` | Block until a key, return `KEY_` code |
+| `keyPressed()` | Non-blocking check |
+| `waitForKey()` | Block (ignore which key) |
+| `pollKeyboard()` | Pump GDI message loop (Windows) |
+| `escPressed()` | Direct ESC key state (no queue, uses `GetAsyncKeyState` on Windows) |
+| `clearKeyBuffer()` | Flush buffered input |
+
+On Windows GDI, `readKey()` drives `GetMessage()` so the window stays responsive and keyboard input works without a console. On DOS, it uses `conio getch()`/`kbhit()`.
+`escPressed()` on Windows uses `GetAsyncKeyState(VK_ESCAPE)` (no message queue); on DOS it
+falls back to `keyPressed() && readKey() == KEY_ESC`.
+
+## Hot-Path Optimisation
+
+`putPixelFast(x, y, c)` / `getPixelFast(x, y)` are macros that expand to a direct
+framebuffer write with bounds clamping.  The standard `putPixel`/`getPixel` inline
+functions remain available and include bounds checks.
+
+Build with `BUILD.BAT BCC DEBUG=1` to add debug symbols (`-v` / `-g` / `/Zi`).
+Without `DEBUG`, `check()` is still always active (not a toggle).

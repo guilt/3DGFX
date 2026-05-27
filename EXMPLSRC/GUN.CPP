@@ -1,51 +1,54 @@
 // Gun-Bullet Mesh Demo.
 
-#include <conio.h>
-#include <mathren.h>
+#include <INPUT.H>
+#include <RENDER.H>
 
 int main()
 {
-    int i, j;
-    object gun, gunOg, bullet, bulletOg;
+    int bulletStep, angleStep;
+    Object3d gun, gunOriginal, bullet, bulletOriginal;
 
-    graini();
-    clearviewport();
+    graphicsInitialize();
+    graphicsClear();
 
-    readobj("GUN.MSH", gunOg);
-    readobj("BULLET.MSH", bulletOg);
+    readObject("GUN.MSH", gunOriginal);
+    readObject("BULLET.MSH", bulletOriginal);
 
-    gun = gunOg;
-    bullet = bulletOg;
+    gun = gunOriginal;
+    bullet = bulletOriginal;
 
-    for (j = 0; j <= 37; j++)
+    for (angleStep = 0; angleStep <= 37; angleStep++)
     {
-        for (i = 0; i < 5; i++)
+        for (bulletStep = 0; bulletStep < 5; bulletStep++)
         {
-            drawobj(gun, 7);
-            drawobj(bullet, 15);
+            drawObject(gun, 7);
+            drawObject(bullet, 15);
+            graphicsUpdate();
             delay(5);
-            drawobj(gun, 0);
-            aorot(gun, 0, 0, 7);
-            drawobj(gun, 7);
+            drawObject(gun, 0);
+            objectRotate(gun, 0, 0, 7);
+            drawObject(gun, 7);
+            graphicsUpdate();
             delay(5);
-            drawobj(gun, 0);
-            aorot(gun, 0, 0, -7);
-            drawobj(gun, 7);
+            drawObject(gun, 0);
+            objectRotate(gun, 0, 0, -7);
+            drawObject(gun, 7);
+            graphicsUpdate();
             delay(5);
-            drawobj(gun, 0);
-            drawobj(bullet, 0);
-            bullet = bulletOg;
-            aotrans(bullet, (i * 20), 0, 0);
-            aorot(bullet, 0, (10 * j), 0);
+            drawObject(gun, 0);
+            drawObject(bullet, 0);
+            bullet = bulletOriginal;
+            objectTranslate(bullet, (bulletStep * 20), 0, 0);
+            objectRotate(bullet, 0, (10 * angleStep), 0);
         }
-        gun = gunOg;
-        aorot(gun, 0, (10 * j), 0);
+        gun = gunOriginal;
+        objectRotate(gun, 0, (10 * angleStep), 0);
     }
 
-    drawobj(gun, 7);
-    drawobj(bullet, 15);
-    (void) getch();
+    drawObject(gun, 7);
+    drawObject(bullet, 15);
+    waitForKey();
 
-    graclo();
+    graphicsClose();
     return 0;
 }
