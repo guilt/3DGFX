@@ -54,7 +54,7 @@ int main()
     image2.load("suzuki.im");
     readPaletteFile("suzuki.pal", palette2);
     graphicsInitialize();
-    initializeRGBPalette(rgbPalette);
+    initializeRGBPalette();
     graphicsClear();
     {
         bool appQuit = false;

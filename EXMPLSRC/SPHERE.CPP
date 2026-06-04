@@ -1,6 +1,7 @@
 // Draws a Sphere With Spherical Co-Ordinates.
 
 #include <INPUT.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -8,6 +9,7 @@ int main()
     double radius, thetaAngle, phiAngle, thetaRadians, phiRadians, aspectRatio = 1.2;
     Point3d point;
     graphicsInitialize();
+    initializeRGBPalette();
     graphicsClear();
     radius = 8;
     for (thetaAngle = 0; thetaAngle <= 360; thetaAngle++)

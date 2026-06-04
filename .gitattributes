@@ -1,0 +1,10 @@
+# Normalise line endings for DOS/Windows compatibility
+* text=auto eol=crlf
+
+# Binary files - don't touch
+*.BMP  binary
+*.IM   binary
+*.PAL  binary
+*.MSH  binary
+*.TEX  binary
+*.BGI  binary

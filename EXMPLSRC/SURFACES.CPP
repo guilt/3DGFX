@@ -1,6 +1,7 @@
 // 3D Graphs with Normal Contours.
 
 #include <INPUT.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -8,6 +9,7 @@ int main()
     double xPos, zPos;
     Point3d point;
     graphicsInitialize();
+    initializeRGBPalette();
     graphicsClear();
     for (xPos = -8; xPos <= 8; xPos += 0.01)
     {

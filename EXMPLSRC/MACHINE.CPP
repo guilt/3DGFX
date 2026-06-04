@@ -9,6 +9,7 @@
 //      Esc to Quit
 
 #include <INPUT.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -29,6 +30,7 @@ int main()
         return 1;
     }
     graphicsInitialize();
+    initializeRGBPalette();
     readObject("base.msh", parts[0]);
     readObject("armb.msh", parts[1]);
     readObject("lever.msh", parts[2]);

@@ -1,6 +1,5 @@
 @REM - Build Executables
 @ECHO OFF
-@IF "%2"=="DEBUG=1" SET ECHO ON
 
 SET BUILD_LOG=..\BUILD.LOG
 CD EXAMPLES
@@ -42,12 +41,12 @@ REM   %LIBS%    = extra link-time libraries (e.g. -lgdi32 -luser32)
 REM ---------------------------------------------------------------
 
 IF "%BLDPLATFORM%"=="BCC" SET CC=BCC
-IF "%BLDPLATFORM%"=="BCC" SET CFLAGS=/mh /I..\INCLUDE
+IF "%BLDPLATFORM%"=="BCC" SET CFLAGS=-mh -I..\INCLUDE
 IF "%BLDPLATFORM%"=="BCC" SET OUT_TO=-o
 IF "%BLDPLATFORM%"=="BCC" SET LIBS=
 
 IF "%BLDPLATFORM%"=="WCL" SET CC=WCL
-IF "%BLDPLATFORM%"=="WCL" SET CFLAGS=/mh /k8192 /I..\INCLUDE
+IF "%BLDPLATFORM%"=="WCL" SET CFLAGS=-mh -k8192 -I..\INCLUDE
 IF "%BLDPLATFORM%"=="WCL" SET OUT_TO=-fe=
 IF "%BLDPLATFORM%"=="WCL" SET LIBS=
 
@@ -76,13 +75,12 @@ REM DEBUG mode (second arg: DEBUG=1)
 REM   Adds -DDEBUG and debug info (-g /Zi) for crash analysis
 REM ---------------------------------------------------------------
 
-IF "%2"=="DEBUG=1" SET CFLAGS=%CFLAGS% -DDEBUG
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="MINGW"  SET CFLAGS=%CFLAGS% -g
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="MSVC"   SET CFLAGS=%CFLAGS% /Zi
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="BCC"    SET CFLAGS=%CFLAGS% -v
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="WCL"    SET CFLAGS=%CFLAGS% -d2
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="DJGPP"  SET CFLAGS=%CFLAGS% -g
-IF "%2"=="DEBUG=1" IF "%BLDPLATFORM%"=="CL"     SET CFLAGS=%CFLAGS% /Zi
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="BCC"    SET CFLAGS=%CFLAGS% -DDEBUG -v
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="WCL"    SET CFLAGS=%CFLAGS% -DDEBUG -d2
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="MSVC"   SET CFLAGS=%CFLAGS% /DDEBUG /Zi
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="CL"     SET CFLAGS=%CFLAGS% /DDEBUG /Zi
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="DJGPP"  SET CFLAGS=%CFLAGS% -DDEBUG -g
+IF NOT "%2"=="" IF "%BLDPLATFORM%"=="MINGW"  SET CFLAGS=%CFLAGS% -DDEBUG -g
 
 ECHO [CONFIG] Configured
 ECHO Build Flags

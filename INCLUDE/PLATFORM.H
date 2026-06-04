@@ -5,10 +5,11 @@
 // Key user-facing macros:
 //   -DWIN         : target Windows (GDI backend, DOS compat stubs)
 //   -DIBGI        : use Borland BGI backend (DOS)
-//   -DISVGA       : SVGA hi-res BGI (requires IBGI)
+//   -DISVGABGI    : SVGA hi-res BGI (requires IBGI)
 //   -DIISO        : isometric projection engine
 //   -DIZCLIP      : Z near/far plane clipping
 //   -DIHSR        : hidden surface removal (back-face culling)
+//   -DITEX        : texture-mapped objects
 //   -DIZBUF       : Z-buffering
 
 #if defined(WIN) || defined(_WIN32) || defined(WIN32)
@@ -41,7 +42,7 @@
   #include <bios.h>
   #if defined(IBGI)
     #include <graphics.h>
-    #ifdef ISVGA
+    #ifdef ISVGABGI
       #include <SVGA256.H>
     #endif
   #endif

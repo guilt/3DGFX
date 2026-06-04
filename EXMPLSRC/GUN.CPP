@@ -1,6 +1,7 @@
 // Gun-Bullet Mesh Demo.
 
 #include <INPUT.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -9,6 +10,7 @@ int main()
     Object3d gun, gunOriginal, bullet, bulletOriginal;
 
     graphicsInitialize();
+    initializeRGBPalette();
     graphicsClear();
 
     readObject("GUN.MSH", gunOriginal);

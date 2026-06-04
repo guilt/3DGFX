@@ -4,6 +4,7 @@
 
 #include <PIXEL.H>
 #include <CANVAS.H>
+#include <stdarg.h>
 
 // 8x8 Mini Bitmap, Corrected.
 
@@ -274,7 +275,7 @@ const font DEFAULT_FONT = {{
 {   0,  0,  0,  0,  0,  0,  0,  0      }
 }};
 
-void dispChar(byte arr[FONT_CHAR_WIDTH], int x = 0, int y = 0, int color = WHITE, int size = 1)
+static void dispChar(const byte arr[FONT_CHAR_WIDTH], int x = 0, int y = 0, int color = WHITE, int size = 1)
 {
     int i, j, k, p, q, cc;
     for (i = 0; i < FONT_CHAR_WIDTH; i++)
@@ -296,14 +297,37 @@ void dispChar(byte arr[FONT_CHAR_WIDTH], int x = 0, int y = 0, int color = WHITE
     }
 }
 
-void drawString(const char text[], int x = 0, int y = 0, int color = WHITE,
-                int size = 1, font userFont = DEFAULT_FONT)
+static void drawStringWithSize(const char text[], int x, int y, int color, int size,
+                               const font& userFont = DEFAULT_FONT)
 {
-    int i = 0;
-    for (; text[i] != 0; i++)
-    {
+    int i;
+    for (i = 0; text[i] != 0; i++)
         dispChar(userFont.chars[text[i]], x + (i * size * FONT_CHAR_WIDTH), y, color, size);
-    }
+}
+
+static void drawString(const char text[], int x = 0, int y = 0, int color = WHITE)
+{
+    drawStringWithSize(text, x, y, color, 1);
+}
+
+static void drawPrintfWithSize(int x, int y, int color, int size, const char* fmt, ...)
+{
+    char buf[128];
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf(buf, fmt, ap);
+    va_end(ap);
+    drawStringWithSize(buf, x, y, color, size);
+}
+
+static void drawPrintf(int x, int y, int color, const char* fmt, ...)
+{
+    char buf[128];
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf(buf, fmt, ap);
+    va_end(ap);
+    drawString(buf, x, y, color);
 }
 
 #endif

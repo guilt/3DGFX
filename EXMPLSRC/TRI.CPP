@@ -31,6 +31,7 @@ int main()
     triangleOriginal2.p2.x = 10, triangleOriginal2.p2.y = 10, triangleOriginal2.p2.z = 15;
     triangleOriginal2.p3.x = 15, triangleOriginal2.p3.y = 10, triangleOriginal2.p3.z = 10;
     graphicsInitialize();
+    initializeRGBPalette();
     graphicsClear();
     triangleWorking1 = triangleOriginal1;
     triangleWorking2 = triangleOriginal2;
@@ -89,7 +90,7 @@ int main()
         triangleWorking1 = triangleOriginal1;
         triangleWorking2 = triangleOriginal2;
         rotateTriangle(triangleWorking1, rotationX, rotationY, rotationZ);
-        rotateTriangle(triangleWorking2, rotationX, rotationY, rotationZ);;
+        rotateTriangle(triangleWorking2, rotationX, rotationY, rotationZ);
     } while (key != KEY_ESC);
     graphicsClose();
     return 0;

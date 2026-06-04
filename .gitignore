@@ -7,7 +7,9 @@
 *.ERR
 *.OBJ
 *.LOG
+*.ILK
+*.PDB
 
 BUILD
-CMAKE*BUILD*
+[Cc][Mm]ake[Bb]uild*
 .IDEA

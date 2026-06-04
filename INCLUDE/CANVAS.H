@@ -17,9 +17,8 @@
 
 #if defined(PLATFORM_WINDOWS)
 
-// Callback so VGA.H can reach the GDI canvas without needing the
-// full GdiCanvas definition.
-extern void (*g_updatePalette)(const unsigned char* palette, int count);
+class GdiCanvas;
+inline GdiCanvas* getGdiCanvas();
 
 // --- Stub for <dos.h> types ---
 struct REGS
@@ -86,16 +85,24 @@ inline void clearScreen()
 #define VGA_PAL_DATA         0x03c9
 
 
+#ifndef FAR
 #if defined(__BORLANDC__) || defined(__WATCOMC__)
 #define FAR __far
 #else
 #define FAR
 #endif
+#endif
+#if defined(_MSC_VER)
+#pragma warning(disable: 4312)  /* VGA address: 0xA0000000 fits in pointer */
+#endif
 byte FAR* VGA = (byte FAR*)0xA0000000L;
+#if defined(_MSC_VER)
+#pragma warning(default: 4312)
+#endif
 
 word screenWidth = 320, screenHeight = 200;
 
-void setMode(byte mode)
+static void setMode(byte mode)
 {
 #if !defined(PLATFORM_WINDOWS)
     union REGS regs;
@@ -123,72 +130,28 @@ byte defaultPalette[PALETTE_BYTES];
 #define CLAMP_X(x)  ((int)(x) < 0 ? 0 : ((int)(x) >= (int)screenWidth  ? (int)screenWidth  - 1 : (int)(x)))
 #define CLAMP_Y(y)  ((int)(y) < 0 ? 0 : ((int)(y) >= (int)screenHeight ? (int)screenHeight - 1 : (int)(y)))
 
-inline void check(int& x, int& y) { x = CLAMP_X(x); y = CLAMP_Y(y); }
-
-inline void putPixel(int x, int y, byte color = currentColor)
-{
-    x = CLAMP_X(x); y = CLAMP_Y(y);
-    VGA[y * (int)screenWidth + x] = color;
-}
-
-inline byte getPixel(int x, int y)
-{
-    x = CLAMP_X(x); y = CLAMP_Y(y);
-    return VGA[y * (int)screenWidth + x];
-}
-
+// Fast pixel access -- must be defined before any function that uses them.
 #define putPixelFast(x, y, c) \
     VGA[CLAMP_Y(y) * (int)screenWidth + CLAMP_X(x)] = (byte)(c)
 #define getPixelFast(x, y) \
     VGA[CLAMP_Y(y) * (int)screenWidth + CLAMP_X(x)]
 
-void drawLine(int x1, int y1, int x2, int y2, byte color = currentColor)
+static void putPixel(int x, int y, byte c) { putPixelFast(x, y, c); }
+static byte getPixel(int x, int y) { return getPixelFast(x, y); }
+
+static void drawLine(int x1, int y1, int x2, int y2, byte color = currentColor)
 {
-    check(x1, y1);
-    check(x2, y2);
-    int i, dx, dy, sdx, sdy, dxabs, dyabs, x, y, px, py;
-    dx = x2 - x1;
-    dy = y2 - y1;
-    dxabs = abs(dx);
-    dyabs = abs(dy);
-    sdx = sign(dx);
-    sdy = sign(dy);
-    x = dyabs >> 1;
-    y = dxabs >> 1;
-    px = x1;
-    py = y1;
-    putPixel(px, py, color);
-    if (dxabs >= dyabs)
-    {
-        for (i = 0; i < dxabs; i++)
-        {
-            y += dyabs;
-            if (y >= dxabs)
-            {
-                y -= dxabs;
-                py += sdy;
-            }
-            px += sdx;
-            putPixelFast(px, py, color);
-        }
-    }
-    else
-    {
-        for (i = 0; i < dyabs; i++)
-        {
-            x += dxabs;
-            if (x >= dyabs)
-            {
-                x -= dxabs;
-                px += sdx;
-            }
-            py += sdy;
-            putPixelFast(px, py, color);
-        }
-    }
+    x1 = CLAMP_X(x1); y1 = CLAMP_Y(y1);
+    x2 = CLAMP_X(x2); y2 = CLAMP_Y(y2);
+    int dx = x2 - x1, dy = y2 - y1;
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    if (steps < 1) steps = 1;
+    int i;
+    for (i = 0; i <= steps; i++)
+        putPixelFast(x1 + dx * i / steps, y1 + dy * i / steps, color);
 }
 
-void drawRect(int left, int top, int right, int bottom, byte color = currentColor)
+static void drawRect(int left, int top, int right, int bottom, byte color = currentColor)
 {
     drawLine(left, top, right, top, color);
     drawLine(left, top, left, bottom, color);
@@ -196,9 +159,9 @@ void drawRect(int left, int top, int right, int bottom, byte color = currentColo
     drawLine(left, bottom, right, bottom, color);
 }
 
-void drawCircle(int x, int y, int radius, byte color = currentColor)
+static void drawCircle(int x, int y, int radius, byte color = currentColor)
 {
-    check(x, y);
+    x = CLAMP_X(x); y = CLAMP_Y(y);
     int o;
     double rx, ry;
     for (o = 0; o < 360; o++)
@@ -216,7 +179,7 @@ void drawCircle(int x, int y, int radius, byte color = currentColor)
 //                         GDI DIB colour table (Windows)
 // setBlackWhitePalette() - greyscale derived from defaultPalette
 
-void setPalette(int index, byte r, byte g, byte b)
+static void setPalette(int index, byte r, byte g, byte b)
 {
     if (index < 0 || index >= 256) return;
     defaultPalette[index * 3]     = r;
@@ -224,7 +187,7 @@ void setPalette(int index, byte r, byte g, byte b)
     defaultPalette[index * 3 + 2] = b;
 }
 
-void setPaletteArray(byte* palette, int count)
+static void setPaletteArray(byte* palette, int count)
 {
     int i;
     for (i = 0; i < count && i < 256; i++)
@@ -235,23 +198,12 @@ void setPaletteArray(byte* palette, int count)
     }
 }
 
-void updateSystemPalette()
-{
-#if !defined(PLATFORM_WINDOWS)
-    int i;
-    outp(VGA_PAL_INDEX, 0);
-    for (i = 0; i < 256 * 3; i++)
-    {
-        outp(VGA_PAL_DATA, defaultPalette[i]);
-    }
-#else
-    if (g_updatePalette) g_updatePalette(defaultPalette, 256);
-#endif
-}
+static void updateSystemPalette();
 
-void setBwPalette()
+static void setBwPalette()
 {
-    for (int i = 0; i < NUM_COLORS; i++)
+    int i;
+    for (i = 0; i < NUM_COLORS; i++)
     {
         byte grey = (defaultPalette[i * 3] + defaultPalette[i * 3 + 1] +
                      defaultPalette[i * 3 + 2]) / 3;
@@ -260,43 +212,30 @@ void setBwPalette()
     updateSystemPalette();
 }
 
-void fadeIn()
+static void fadeIn()
 {
-    for (int i = 0; i < NUM_COLORS * 3; i++)
+    int i;
+    for (i = 0; i < NUM_COLORS * 3; i++)
         defaultPalette[i] = 0;
     updateSystemPalette();
 }
 
-void setColor(byte color)
+#if !defined(PLATFORM_WINDOWS)
+static void updateSystemPalette()
 {
-    currentColor = color;
+    int i;
+    outp(VGA_PAL_INDEX, 0);
+    for (i = 0; i < 256 * 3; i++)
+        outp(VGA_PAL_DATA, defaultPalette[i]);
 }
+#endif
 
-byte getColor()
-{
-    return currentColor;
-}
-
-word getMaxX()
-{
-    return screenWidth - 1;
-}
-
-word getMaxY()
-{
-    return screenHeight - 1;
-}
-
-void graphicsClear()
-{
-    memset(VGA, currentBackgroundColor, (size_t)screenWidth * screenHeight);
-}
-
-void setRgbPalette(int color, int r, int g, int b)
-{
-    setPalette(color, (byte)r, (byte)g, (byte)b);
-    updateSystemPalette();
-}
+static void setColor(byte c) { currentColor = c; }
+static byte getColor() { return currentColor; }
+#define getMaxX()          (screenWidth - 1)
+#define getMaxY()          (screenHeight - 1)
+#define graphicsClear()    memset(VGA, currentBackgroundColor, (size_t)screenWidth * screenHeight)
+#define setRgbPalette(i,r,g,b)  do { setPalette((i),(byte)(r),(byte)(g),(byte)(b)); updateSystemPalette(); } while(0)
 
 #endif
 
@@ -710,18 +649,20 @@ private:
 
 #if defined(PLATFORM_WINDOWS)
 
-inline GdiCanvas* getGdiCanvas()
-{
-    static GdiCanvas canvas;
-    return &canvas;
-}
+#if defined(_MSC_VER)
+__declspec(selectany) GdiCanvas _gdiCanvas;
+#elif defined(__GNUC__)
+__attribute__((weak)) GdiCanvas _gdiCanvas;
+#else
+static GdiCanvas _gdiCanvas;
+#endif
+inline GdiCanvas* getGdiCanvas() { return &_gdiCanvas; }
 
-void updatePalette(const unsigned char* palette, int count)
+static void updateSystemPalette()
 {
-    getGdiCanvas()->setPaletteArray(palette, count);
+    GdiCanvas* c = getGdiCanvas();
+    if (c) c->setPaletteArray(defaultPalette, 256);
 }
-
-void (*g_updatePalette)(const unsigned char*, int) = updatePalette;
 
 #define maxX screenWidth - 1
 #define maxY screenHeight - 1
@@ -731,7 +672,7 @@ void (*g_updatePalette)(const unsigned char*, int) = updatePalette;
 void graphicsInitialize()
 {
     clearScreen();
-    getGdiCanvas()->init(320, 200);
+    getGdiCanvas()->init(screenWidth, screenHeight);
     VGA = getGdiCanvas()->frameBuffer();
     screenWidth  = (word)getGdiCanvas()->width();
     screenHeight = (word)getGdiCanvas()->height();
@@ -760,7 +701,7 @@ void clearScreen()
 int bgiDriver, bgiMode;
 char bgiPath[] = {"..\\BGI"};
 
-#ifndef ISVGA
+#ifndef ISVGABGI
 void graphicsInitialize()
 {
     clearScreen();
@@ -769,7 +710,7 @@ void graphicsInitialize()
 }
 #endif
 
-#ifdef ISVGA
+#ifdef ISVGABGI
 #define SVGAPATH "SVGA256"
 
 void graphicsInitialize()

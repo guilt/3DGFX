@@ -7,19 +7,14 @@
 
 
 
-double mod(double a)
-{
-    if (a < 0)
-    {
-        a *= -1;
-    }
-    return a;
-}
+#define mod(a) (((a) < 0) ? -(a) : (a))
 
 struct ProjectedPoint
 {
     double x, y;
-} projected, projected1, projected2;
+};
+
+static ProjectedPoint projected, projected1, projected2;
 
 #define MAX_POINTS 50
 
@@ -43,54 +38,27 @@ struct Triangle3d
     Point3d p1, p2, p3;
 };
 
-void translate(Point3d& p, double x, double y, double z)
+#define translate(p, x, y, z)  do { (p).x += (x); (p).y += (y); (p).z += (z); } while(0)
+
+static void rotate(Point3d& p, int degx, int degy, int degz)
 {
-    p.x += x;
-    p.y += y;
-    p.z += z;
+    double x = p.x, y = p.y, z = p.z;
+    double r, c, s, t;
+
+    if (degx) { r = degToRad(degx); c = cos(r); s = sin(r); t = y*c - z*s; z = y*s + z*c; y = t; }
+    if (degy) { r = degToRad(degy); c = cos(r); s = sin(r); t = z*c - x*s; x = z*s + x*c; z = t; }
+    if (degz) { r = degToRad(degz); c = cos(r); s = sin(r); t = x*c - y*s; y = x*s + y*c; x = t; }
+
+    p.x = x; p.y = y; p.z = z;
 }
 
-void translateLine(Line3d& l, double x, double y, double z)
-{
-    translate(l.p1, x, y, z);
-    translate(l.p2, x, y, z);
-}
+#define rotateLine(l, dx, dy, dz) \
+    do { rotate((l).p1, (dx), (dy), (dz)); rotate((l).p2, (dx), (dy), (dz)); } while(0)
 
-void translateTriangle(Triangle3d& t, double x, double y, double z)
-{
-    translate(t.p1, x, y, z);
-    translate(t.p2, x, y, z);
-    translate(t.p3, x, y, z);
-}
-
-void rotate2d(double& x, double& y, int deg)
-{
-    double r = degToRad(deg);
-    double x1 = x * cos(r) - y * sin(r);
-    double y1 = x * sin(r) + y * cos(r);
-    x = x1;
-    y = y1;
-}
-
-void rotate(Point3d& p, int degx, int degy, int degz)
-{
-    rotate2d(p.y, p.z, degx);
-    rotate2d(p.z, p.x, degy);
-    rotate2d(p.x, p.y, degz);
-}
-
-void rotateLine(Line3d& l, int degx, int degy, int degz)
-{
-    rotate(l.p1, degx, degy, degz);
-    rotate(l.p2, degx, degy, degz);
-}
-
-void rotateTriangle(Triangle3d& t, int degx, int degy, int degz)
-{
-    rotate(t.p1, degx, degy, degz);
-    rotate(t.p2, degx, degy, degz);
-    rotate(t.p3, degx, degy, degz);
-}
+#define rotateTriangle(t, dx, dy, dz) \
+    do { rotate((t).p1, (dx), (dy), (dz)); \
+         rotate((t).p2, (dx), (dy), (dz)); \
+         rotate((t).p3, (dx), (dy), (dz)); } while(0)
 
 
 struct ProjectionState

@@ -10,7 +10,7 @@ int main()
     graphicsInitialize();
     setPaletteFromFile(DEFAULT_PAL);
     i.draw(0, 0);
-    drawString("Odie!", 180, 66, 4, 2);
+    drawStringWithSize("Odie!", 180, 66, 4, 2);
     graphicsUpdate();
     waitForKey();
     setBwPalette(); // Watch the Fun!

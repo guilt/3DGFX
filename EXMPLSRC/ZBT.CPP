@@ -6,10 +6,12 @@
 //        Esc: to Quit
 
 #define IHSR
+#define ITEX
 #define IZBUF
 #define IZCLIP
 
 #include <INPUT.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -22,12 +24,15 @@ int main()
     loadTexturedObjectInto("texo1.msh", object1);
     loadTexturedObjectInto("texo2.msh", object2);
     graphicsInitialize();
+    initializeRGBPalette();
     loadTextures("tex.tex");
     loadUsedTextures(object1);
     loadUsedTextures(object2);
     objectTranslate(object2, 14, 14, 14);
     do
     {
+        graphicsClear();
+        zBufferClear();
         graphicsClear();
         zBufferClear();
         drawTexturedObject(object1);

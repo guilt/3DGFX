@@ -2,6 +2,7 @@
 
 #include <INPUT.H>
 #include <BITMAP.H>
+#include <PIXEL.H>
 #include <RENDER.H>
 
 int main()
@@ -17,7 +18,7 @@ int main()
     halfWidth = bitmap.h.width / 2;
     halfHeight = bitmap.h.height / 2;
     graphicsInitialize();
-    initBitmap(bitmap);
+    initializeRGBPalette();
     graphicsClear();
     for (texelX = -1 * halfWidth; texelX < halfWidth; texelX++)
     {

@@ -6,8 +6,8 @@ Please read all of this Documentation:
 - [Header Reference](DOC/HEADERS.MD)
 - [Directory Layout](DOC/DESC.MD)
 
-This Library is released with an accompanying [License](LICENSE.MD).  
-See also [FILE_ID.DIZ](FILE_ID.DIZ).
+This Library is released with an accompanying [License](LICENSE.MD)
+and [File Descriptor](FILE_ID.DIZ).
 
 ## Building
 
