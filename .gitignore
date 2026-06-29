@@ -9,6 +9,11 @@
 *.LOG
 *.ILK
 *.PDB
+*.TLN
+*.MAP
+*.RSP
+*.$$$
+*.LST
 
 BUILD
 [Cc][Mm]ake[Bb]uild*

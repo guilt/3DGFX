@@ -6,7 +6,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/EXAMPLES/")
 
 # Include Directories
 include_directories(
-    ${PROJECT_SOURCE_DIR}/BGI/
     ${PROJECT_SOURCE_DIR}/INCLUDE/
 )
 
@@ -30,7 +29,7 @@ if(DEBUG)
     add_definitions(-DDEBUG)
 endif()
 
-# --- All 11 examples ---
+# --- All 12 examples ---
 
 add_executable(BMP  EXMPLSRC/BMP.CPP)
 add_executable(GUN  EXMPLSRC/GUN.CPP)
@@ -41,6 +40,7 @@ add_executable(SPHERE EXMPLSRC/SPHERE.CPP)
 add_executable(SURFACES EXMPLSRC/SURFACES.CPP)
 add_executable(TEX  EXMPLSRC/TEX.CPP)
 add_executable(TEXFACES EXMPLSRC/TEXFACES.CPP)
+add_executable(TEXT  EXMPLSRC/TEXT.CPP)
 add_executable(TRI  EXMPLSRC/TRI.CPP)
 add_executable(ZBT  EXMPLSRC/ZBT.CPP)
 
@@ -56,6 +56,7 @@ if(PLATFORM_LIBS)
     target_link_libraries(SURFACES ${PLATFORM_LIBS})
     target_link_libraries(TEX  ${PLATFORM_LIBS})
     target_link_libraries(TEXFACES ${PLATFORM_LIBS})
+    target_link_libraries(TEXT  ${PLATFORM_LIBS})
     target_link_libraries(TRI  ${PLATFORM_LIBS})
     target_link_libraries(ZBT  ${PLATFORM_LIBS})
 endif()

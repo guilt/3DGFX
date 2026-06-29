@@ -35,7 +35,14 @@ cmake --build Build
 
 Once built:
 ```
-RUNDEMO.BAT
+RUNDEMO.BAT           (runs all examples in sequence)
+```
+
+Individual demos:
+```
+TEXT.EXE              multi-script Unicode demo
+BMP.EXE               bitmap loader demo
+IMAGE.EXE             image loader demo
 ```
 
 ## Acknowledgments

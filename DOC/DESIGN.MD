@@ -110,3 +110,12 @@ functions remain available and include bounds checks.
 
 Build with `BUILD.BAT BCC DEBUG=1` to add debug symbols (`-v` / `-g` / `/Zi`).
 Without `DEBUG`, `check()` is still always active (not a toggle).
+
+## Unicode Drawing
+
+You're able to draw most of Unicode freely, loading fonts and bitmaps often takes a lot
+of memory. You start with the language ranges you want in Unicode, then include them optionally.
+
+Most common RTL text is handled automatically.
+
+See WANT_FTARK_* and WANT_FTUNI_* macros and an example in TEXT.CPP.
